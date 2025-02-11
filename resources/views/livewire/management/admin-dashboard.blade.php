@@ -22,7 +22,7 @@
     <!-- ============================================================== -->
     <!-- Container fluid  -->
     <!-- ============================================================== -->
-    <div class="container-fluid">
+    <div class="container-fluid d-none">
         <div class="card-group">
             <div class="card">
                 <div class="card-body">
