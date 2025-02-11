@@ -21,7 +21,7 @@
 
             <div class="mb-3 col-md-3">
                 <label for="merp_id" class="form-label required">{{ __('Merp Code') }}</label>
-                <select class="form-control" id="merp_id" wire:model.lazy="merp_id">
+                <select class="form-control" id="merp_id" wire:model="merp_id">
                     <option value="">Select</option>
                     @foreach ($merpCodes as $code)
                         <option value="{{ $code->id }}">{{ $code->project_code }}</option>

@@ -45,6 +45,7 @@ class Project extends Model
         'fa_percentage_fee',
         'project_summary',
         'progress_status',
+        'merp_id',
     ];
     public function getActivitylogOptions(): LogOptions
     {
