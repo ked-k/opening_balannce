@@ -67,7 +67,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">{{ __('New Expense Type') }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <button type="button" wire:click="close()" class="close" data-dismiss="modal"
+                        aria-hidden="true">×</button>
                 </div>
 
                 <form
@@ -112,7 +113,8 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">{{ __('Close') }}</button>
+                        <button type="button" wire:click="close()" class="btn btn-danger"
+                            data-dismiss="modal">{{ __('Close') }}</button>
                         <button type="submit" class="btn btn-success">{{ __('Save') }}</button>
                     </div>
                 </form>

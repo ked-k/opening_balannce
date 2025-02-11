@@ -2,7 +2,9 @@
 
 namespace App\Http\Livewire\Finance;
 
+use App\Models\Finance\MerpProject;
 use App\Models\Finance\Project;
+use App\Models\Finance\ProjectMou;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -57,10 +59,52 @@ class FmsProjectsComponent extends Component
     public $project_id;
     public $loadingInfo = '';
     public $editMode = false;
+    public $mous;
+    public $p_start_date;
+    public $merp_id;
 
     protected $listeners = [
         'loadProject',
     ];
+
+    public $mou_count = 1; // to keep track of the number of MOU fields
+
+    protected $rules = [
+        'name' => 'required|string|max:255',
+        'mous.*.funding_amount' => 'required|numeric',
+        'mous.*.start_date' => 'required|date',
+        'mous.*.end_date' => 'nullable|date|after_or_equal:mous.*.start_date',
+    ];
+
+    public function mount()
+    {
+        // Initial setup for the first MOU
+        $this->mountMou();
+    }
+    public function mountMou()
+    {
+        // Initial setup for the first MOU
+        $this->mous[] = ['start_date' => '', 'end_date' => '', 'funding_amount' => ''];
+    }
+
+    public function updatedMerpId()
+    {
+        $project = MerpProject::where('id', $this->merp_id)->first();
+        $this->name = $project->name ?? null;
+        $this->project_code = $project->project_code ?? null;
+    }
+    public function addMou()
+    {
+        $this->mou_count++;
+        $this->mous[] = ['start_date' => '', 'end_date' => '', 'funding_amount' => ''];
+    }
+
+    public function removeMou($index)
+    {
+        unset($this->mous[$index]);
+        $this->mous = array_values($this->mous); // Reindex the array after removal
+        $this->mou_count--;
+    }
 
     public function updatedFafeeExemption()
     {
@@ -81,14 +125,14 @@ class FmsProjectsComponent extends Component
         $this->project_code = $project->project_code;
         $this->name = $project->name;
         // $this->grant_id = $project->grant_id??null;
-        $this->sponsor_id = $project->sponsor_id;
-        $this->funding_amount = $project->funding_amount;
+        // $this->sponsor_id = $project->sponsor_id;
+        // $this->funding_amount = $project->funding_amount;
         $this->currency_id = $project->currency_id;
         // $this->proposal_submission_date = $this->project->proposal_submission_date;
         // $this->pi = $project->pi??null;
-        // $this->co_pi = $project->co_pi??null;
-        $this->start_date = $project->start_date;
-        $this->end_date = $project->end_date;
+        $this->merp_id = $project->merp_id ?? null;
+        $this->start_date = $project->p_start_date;
+        // $this->end_date = $project->_date;
 
         $this->fa_fee_exemption = $project->fa_fee_exemption;
         $this->fa_percentage_fee = $project->fa_percentage_fee;
@@ -97,6 +141,18 @@ class FmsProjectsComponent extends Component
         $this->progress_status = $project->progress_status;
 
         $this->editMode = true;
+        if (count($project->mous) > 0) {
+            $this->mous = $project->mous->map(function ($mou) {
+                return [
+                    'start_date' => $mou->start_date,
+                    'end_date' => $mou->end_date,
+                    'funding_amount' => $mou->funding_amount,
+                ];
+            })->toArray();
+        } else {
+            // If no projectId is provided, initialize a blank MOU
+            $this->mous[] = ['start_date' => '', 'end_date' => '', 'funding_amount' => ''];
+        }
     }
 
     public function storeProject()
@@ -106,11 +162,11 @@ class FmsProjectsComponent extends Component
             'project_category' => 'required',
             'project_code' => 'required',
             'name' => 'required',
-            'funding_amount' => 'required',
+            // 'funding_amount' => 'required',
             'funding_source' => 'nullable',
             'currency_id' => 'required',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
+            'p_start_date' => 'required|date',
+            'merp_id' => 'nullable|numeric',
             'fa_percentage_fee' => 'required',
             'project_summary' => 'nullable',
             'progress_status' => 'required',
@@ -118,30 +174,57 @@ class FmsProjectsComponent extends Component
 
         DB::transaction(function () {
 
-            $projectDTO = Project::updateOrCreate(
+            $project = Project::updateOrCreate(
                 ['id' => $this->edit_id],
                 [
                     'project_type' => $this->project_type,
                     'project_category' => $this->project_category,
                     'project_code' => $this->project_code,
                     'name' => $this->name,
+                    'merp_id' => $this->merp_id,
                     'funding_amount' => $this->funding_amount,
                     'funding_source' => $this->funding_source,
                     'currency_id' => $this->currency_id,
-                    'start_date' => $this->start_date,
-                    'end_date' => $this->end_date,
+                    'start_date' => $this->p_start_date,
+                    'end_date' => $this->p_start_date,
                     'fa_fee_exemption' => $this->fa_fee_exemption ?? true,
                     'fa_percentage_fee' => $this->fa_percentage_fee,
                     'project_summary' => $this->project_summary,
                     'progress_status' => $this->progress_status,
                 ]
             );
+
+            if ($this->mou_count > 0 && !$this->edit_id) {
+
+                foreach ($this->mous as $mouData) {
+                    if (isset($mouData['id'])) {
+                        $mou = ProjectMou::findOrFail($mouData['id']);
+                        $mou->update($mouData);
+                    } else {
+                        $mouData['project_id'] = $project->id;
+                        ProjectMou::create($mouData);
+                    }
+                }
+                // foreach ($this->mous as $mou) {
+                //     ProjectMou::create([
+                //         'project_id' => $project->id,
+                //         'start_date' => $mou['start_date'],
+                //         'end_date' => $mou['end_date'],
+                //         'funding_amount' => $mou['funding_amount'],
+                //     ]);
+                // }
+            }
             $this->resetInputs();
             $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Project/study details created successfully']);
 
         });
     }
 
+    public function close()
+    {
+        $this->resetInputs();
+        $this->mou_count = 1;
+    }
     public function resetInputs()
     {
         $this->reset([
@@ -156,8 +239,10 @@ class FmsProjectsComponent extends Component
             'fa_percentage_fee',
             'project_summary',
             'progress_status',
+            'edit_id',
         ]);
-
+        $this->mou_count = 1;
+        $this->mous[] = ['start_date' => '', 'end_date' => '', 'funding_amount' => ''];
     }
     public function projectCreated($details)
     {
@@ -222,6 +307,7 @@ class FmsProjectsComponent extends Component
         $data['projects'] = $this->filterProjects()
             ->orderBy($this->orderBy, $this->orderAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
+        $data['merpCodes'] = MerpProject::all();
         return view('livewire.finance.fms-projects-component', $data);
     }
 }

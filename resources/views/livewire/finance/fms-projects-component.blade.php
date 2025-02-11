@@ -42,7 +42,7 @@
                                                 <td>{{ $key + 1 }}</td>
                                                 <td title="{{ $project->name }}">{{ $project->project_code }}</td>
                                                 <td>{{ $project->project_category }}</td>
-                                                <td>@money_formart($project->funding_amount)</td>
+                                                <td>@money_formart($project->fundingBalance())</td>
                                                 <td>@formatDate($project->start_date)</td>
                                                 <td>@formatDate($project->end_date)</td>
                                                 {{-- <td>{{ $project->principalInvestigator?->fullName ?? 'N/A' }}</td> --}}
@@ -98,7 +98,8 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">{{ __('New Project') }}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <button type="button" class="close" wire:click="close()" data-dismiss="modal"
+                            aria-hidden="true">×</button>
                     </div>
                     @include('livewire.finance.project-form')
                 </div>

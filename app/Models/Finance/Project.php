@@ -24,6 +24,15 @@ class Project extends Model
         // Chain fluent methods for configuration options
     }
 
+    public function mous()
+    {
+        return $this->hasMany(ProjectMou::class, 'project_id', 'id');
+    }
+
+    public function fundingBalance()
+    {
+        return $this->mous()->sum('funding_amount');
+    }
     protected $guarded = ['id'];
     // public function requests(): MorphMany
     // {
