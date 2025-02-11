@@ -174,27 +174,36 @@
                     </div>
                 @endforeach
                 @if (count($savedMous) > 0)
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Start Date</th>
-                            <th>End Date Date</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($savedMous as $key => $savedMou)
+                    <table class="table table-sm">
+                        <thead>
                             <tr>
-                                <td>{{ $key + 1 }}</td>
-                                <td>{{ $savedMou->start_date }}</td>
-                                <td>{{ $savedMou->end_date }}</td>
-                                <td>{{ $savedMou->funding_amount }}</td>
+                                <th>#</th>
+                                <th>Start Date</th>
+                                <th>End Date Date</th>
+                                <th>Amount</th>
+                                <th>Action</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @endif
+                        </thead>
+                        <tbody>
+                            @foreach ($savedMous as $key => $savedMou)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $savedMou->start_date }}</td>
+                                    <td>{{ $savedMou->end_date }}</td>
+                                    <td>{{ $savedMou->funding_amount }}</td>
+                                    <td>
+                                        <div class="d-flex justify-content-between">
+                                            <button class="btn btn-sm btn-outline-success m-1" data-toggle="modal"
+                                                data-target="#addnew" wire:click="deleteMou({{ $project->id }})"
+                                                title="{{ __('public.delete') }}">
+                                                <i class="fa fa-trash fs-18"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
             </div>
         </div>
 

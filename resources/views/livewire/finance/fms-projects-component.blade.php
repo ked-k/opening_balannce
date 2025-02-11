@@ -48,24 +48,12 @@
                                                 <td>@formatDate($project->start_date)</td>
                                                 <td>@formatDate($project->end_date)</td>
                                                 {{-- <td>{{ $project->principalInvestigator?->fullName ?? 'N/A' }}</td> --}}
-                                                <td><span class="badge bg-info">{{ $project->fa_percentage_fee }}
-                                                        %</span>
+                                                <td>{{ $project->fa_percentage_fee }}
                                                 </td>
-                                                {{-- <td><span class="badge bg-info">{{ ucfirst($project->progress_status) }}</span></td> --}}
-                                                @if ($project->start_date > today())
-                                                    <td><span class="badge bg-info">Coming soon...</span>
+                                                <td><span
+                                                        class="badge bg-success">{{ ucfirst($project->progress_status) }}</span>
+                                                </td>
 
-                                                    </td>
-                                                @elseif ($project->end_date >= today())
-                                                    <td><span class="badge bg-success">Running</span>
-                                                        @if ($project->days_to_expire >= 0)
-                                                            + ({{ $project->days_to_expire }}) days
-                                                        @else
-                                                        @endif
-                                                    </td>
-                                                @else
-                                                    <td><span class="badge bg-danger">Ended</span></td>
-                                                @endif
 
                                                 <td>
                                                     <div class="d-flex justify-content-between">

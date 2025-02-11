@@ -134,7 +134,7 @@ class FmsProjectsComponent extends Component
         $this->name = $project->name;
         // $this->grant_id = $project->grant_id??null;
         // $this->sponsor_id = $project->sponsor_id;
-        // $this->funding_amount = $project->funding_amount;
+        $this->funding_source = $project->funding_source;
         $this->currency_id = $project->currency_id;
         // $this->proposal_submission_date = $this->project->proposal_submission_date;
         // $this->pi = $project->pi??null;
