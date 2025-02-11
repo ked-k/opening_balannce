@@ -240,6 +240,7 @@ class FmsProjectsComponent extends Component
             'project_summary',
             'progress_status',
             'edit_id',
+            'merp_id',
         ]);
         $this->resetMous();
         $this->savedMous = collect([]);
