@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
             View::share('facilityInfo', []);
         }
 
-        Blade::directive('money_formart', function ($figure) {
+        Blade::directive('money_format', function ($figure) {
             return "<?php echo number_format($figure,3); ?>";
         });
 

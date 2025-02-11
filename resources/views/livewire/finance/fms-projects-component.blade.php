@@ -27,6 +27,7 @@
                                             <th>{{ __('Name') }}</th>
                                             <th>{{ __('Category') }}</th>
                                             <th>{{ __('Funding') }}</th>
+                                            <th>{{ __('Current Balance') }}</th>
                                             <th>{{ __('Start Date') }}</th>
                                             <th>{{ __('End Date') }}</th>
                                             {{-- <th>{{ __('PI') }}</th> --}}
@@ -42,12 +43,13 @@
                                                 <td>{{ $key + 1 }}</td>
                                                 <td title="{{ $project->name }}">{{ $project->project_code }}</td>
                                                 <td>{{ $project->project_category }}</td>
-                                                <td>@money_formart($project->fundingBalance())</td>
+                                                <td>@money_format($project->fundingBalance())</td>
+                                                <td>@money_format($project->getCurrentBalance())</td>
                                                 <td>@formatDate($project->start_date)</td>
                                                 <td>@formatDate($project->end_date)</td>
                                                 {{-- <td>{{ $project->principalInvestigator?->fullName ?? 'N/A' }}</td> --}}
-                                                <td><span
-                                                        class="badge bg-danger">{{ $project->fa_percentage_fee }}</span>
+                                                <td><span class="badge bg-info">{{ $project->fa_percentage_fee }}
+                                                        %</span>
                                                 </td>
                                                 {{-- <td><span class="badge bg-info">{{ ucfirst($project->progress_status) }}</span></td> --}}
                                                 @if ($project->start_date > today())
