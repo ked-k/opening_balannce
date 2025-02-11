@@ -149,7 +149,7 @@ class FmsProjectsComponent extends Component
         $this->progress_status = $project->progress_status;
 
         $this->editMode = true;
-        $this->savedMous = $project->mou;
+        $this->savedMous = $project->mous ?? collect([]);
 
     }
 
@@ -242,6 +242,7 @@ class FmsProjectsComponent extends Component
             'edit_id',
         ]);
         $this->resetMous();
+        $this->savedMous = collect([]);
     }
     public function projectCreated($details)
     {

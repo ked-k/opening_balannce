@@ -137,6 +137,7 @@
                     MOU</button>
             </div>
             <div class="col-12">
+
                 @foreach ($mous as $index => $mou)
                     <div class="row" wire:key="mou-{{ $index }}">
 
@@ -172,6 +173,28 @@
                         </div>
                     </div>
                 @endforeach
+                @if (count($savedMous) > 0)
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Start Date</th>
+                            <th>End Date Date</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($savedMous as $key => $savedMou)
+                            <tr>
+                                <td>{{ $key + 1 }}</td>
+                                <td>{{ $savedMou->start_date }}</td>
+                                <td>{{ $savedMou->end_date }}</td>
+                                <td>{{ $savedMou->funding_amount }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
             </div>
         </div>
 
