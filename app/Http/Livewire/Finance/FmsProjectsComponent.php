@@ -69,12 +69,11 @@ class FmsProjectsComponent extends Component
         }
     }
 
-    public function loadProject($details)
+    public function loadProject($id)
     {
-        $this->project_id = $details['projectId'];
-        $this->loadingInfo = $details['info'];
+        $this->edit_id = $id;
 
-        $project = Project::findOrFail($this->project_id);
+        $project = Project::findOrFail($this->edit_id);
         $this->project = $project;
         $this->project_type = $project->project_type;
         $this->project_category = $project->project_category;
@@ -85,7 +84,7 @@ class FmsProjectsComponent extends Component
         $this->sponsor_id = $project->sponsor_id;
         $this->funding_amount = $project->funding_amount;
         $this->currency_id = $project->currency_id;
-        $this->proposal_submission_date = $this->project->proposal_submission_date;
+        // $this->proposal_submission_date = $this->project->proposal_submission_date;
         // $this->pi = $project->pi??null;
         // $this->co_pi = $project->co_pi??null;
         $this->start_date = $project->start_date;

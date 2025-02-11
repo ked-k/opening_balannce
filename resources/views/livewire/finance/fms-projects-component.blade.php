@@ -104,3 +104,17 @@
                 </div>
             </div>
         </div>
+    </div>
+    @push('scripts')
+        <script>
+            window.addEventListener('close-modal', event => {
+                $('#addnew').modal('hide');
+                $('#delete_modal').modal('hide');
+                $('#show-delete-confirmation-modal').modal('hide');
+            });
+            window.addEventListener('delete-modal', event => {
+                $('#delete_modal').modal('show');
+            });
+        </script>
+    @endpush
+</div>
