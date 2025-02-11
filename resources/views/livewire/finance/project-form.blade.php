@@ -19,28 +19,10 @@
                 <label for="project_type" class="form-label required">{{ __('Type') }}</label>
                 <select class="form-control" id="project_type" wire:model.lazy="project_type">
                     <option selected value="">Select</option>
-                    @if ($project_category == 'Grant')
-                        <option value="Research">Research Grant</option>
-                        <option value="Health-Medical">Health and Medical Research Grant</option>
-                        <option value="Education">Education Grant</option>
-                        <option value="Equipment">Equipment Grant</option>
-                        <option value="Training">Training Grant</option>
-                        <option value="Program-Development">Program Development Grant</option>
-                        <option value="Community-Outreach">Community Outreach Grant</option>
-                        <option value="Capacity-Building">Capacity Building Grant</option>
-                        <option value="International-Collaboration">International Collaboration Grant
-                        </option>
-                        <option value="Environmental">Environmental Grant</option>
-                        <option value="Humanitarian">Humanitarian Grant</option>
-                        <option value="Technology-Innovation">Technology Innovation Grant</option>
-                        <option value="Innovation-Entrepreneurship">Innovation and Entrepreneurship Grant
-                        </option>
-                        <option value="Arts-Culture">Arts and Culture Grant</option>
-                        <option value="Travel">Travel Grant</option>
-                    @else
-                        <option value="Primary">Primary</option>
-                        <option value="Non-Primary">Non-Primary</option>
-                    @endif
+
+                    <option value="Primary">Primary</option>
+                    <option value="Non-Primary">Non-Primary</option>
+
 
                 </select>
                 @error('project_type')
@@ -131,15 +113,10 @@
                     <option value="Implementation">Implementation</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Data Analysis">Data Analysis</option>
-                    <option value="Quality Assurance">Quality Assurance</option>
                     <option value="Evaluation">Evaluation</option>
-                    <option value="Iteration">Iteration/Refinement</option>
-                    <option value="Milestone Achieved">Milestone Achieved</option>
                     <option value="Reporting">Reporting</option>
                     <option value="Transition">Transition</option>
                     <option value="Completed">Completed</option>
-                    <option value="Delayed">Delayed</option>
-                    <option value="Pending Review">Pending Review</option>
                     <option value="On-hold">On Hold</option>
                     <option value="Terminated">Terminated</option>3
                 </select>

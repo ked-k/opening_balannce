@@ -107,7 +107,7 @@ class FmsProjectsComponent extends Component
             'project_code' => 'required',
             'name' => 'required',
             'funding_amount' => 'required',
-            'funding_source' => 'required',
+            'funding_source' => 'nullable',
             'currency_id' => 'required',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
