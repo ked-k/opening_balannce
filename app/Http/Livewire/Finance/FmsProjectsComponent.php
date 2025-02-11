@@ -62,6 +62,7 @@ class FmsProjectsComponent extends Component
     public $mous;
     public $p_start_date;
     public $merp_id;
+    public $savedMous;
 
     protected $listeners = [
         'loadProject',
@@ -79,6 +80,7 @@ class FmsProjectsComponent extends Component
     public function mount()
     {
         // Initial setup for the first MOU
+        $this->savedMous = collect([]);
         $this->mountMou();
     }
     public function mountMou()
@@ -97,6 +99,12 @@ class FmsProjectsComponent extends Component
     {
         $this->mou_count++;
         $this->mous[] = ['start_date' => '', 'end_date' => '', 'funding_amount' => ''];
+    }
+    public function resetMous()
+    {
+        // Reset MOU fields to initial state (empty or with default values)
+        $this->mous = [['start_date' => '', 'end_date' => '', 'funding_amount' => '']];
+        $this->mou_count = 1; // Reset MOU count
     }
 
     public function removeMou($index)
@@ -131,7 +139,7 @@ class FmsProjectsComponent extends Component
         // $this->proposal_submission_date = $this->project->proposal_submission_date;
         // $this->pi = $project->pi??null;
         $this->merp_id = $project->merp_id ?? null;
-        $this->start_date = $project->p_start_date;
+        $this->p_start_date = $project->start_date;
         // $this->end_date = $project->_date;
 
         $this->fa_fee_exemption = $project->fa_fee_exemption;
@@ -141,18 +149,8 @@ class FmsProjectsComponent extends Component
         $this->progress_status = $project->progress_status;
 
         $this->editMode = true;
-        if (count($project->mous) > 0) {
-            $this->mous = $project->mous->map(function ($mou) {
-                return [
-                    'start_date' => $mou->start_date,
-                    'end_date' => $mou->end_date,
-                    'funding_amount' => $mou->funding_amount,
-                ];
-            })->toArray();
-        } else {
-            // If no projectId is provided, initialize a blank MOU
-            $this->mous[] = ['start_date' => '', 'end_date' => '', 'funding_amount' => ''];
-        }
+        $this->savedMous = $project->mou;
+
     }
 
     public function storeProject()
@@ -194,25 +192,25 @@ class FmsProjectsComponent extends Component
                 ]
             );
 
-            if ($this->mou_count > 0 && !$this->edit_id) {
+            if ($this->mou_count > 0) {
 
-                foreach ($this->mous as $mouData) {
-                    if (isset($mouData['id'])) {
-                        $mou = ProjectMou::findOrFail($mouData['id']);
-                        $mou->update($mouData);
-                    } else {
-                        $mouData['project_id'] = $project->id;
-                        ProjectMou::create($mouData);
-                    }
-                }
-                // foreach ($this->mous as $mou) {
-                //     ProjectMou::create([
-                //         'project_id' => $project->id,
-                //         'start_date' => $mou['start_date'],
-                //         'end_date' => $mou['end_date'],
-                //         'funding_amount' => $mou['funding_amount'],
-                //     ]);
+                // foreach ($this->mous as $mouData) {
+                //     if (isset($mouData['id'])) {
+                //         $mou = ProjectMou::findOrFail($mouData['id']);
+                //         $mou->update($mouData);
+                //     } else {
+                //         $mouData['project_id'] = $project->id;
+                //         ProjectMou::create($mouData);
+                //     }
                 // }
+                foreach ($this->mous as $mou) {
+                    ProjectMou::create([
+                        'project_id' => $project->id,
+                        'start_date' => $mou['start_date'],
+                        'end_date' => $mou['end_date'],
+                        'funding_amount' => $mou['funding_amount'],
+                    ]);
+                }
             }
             $this->resetInputs();
             $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Project/study details created successfully']);
@@ -236,13 +234,14 @@ class FmsProjectsComponent extends Component
             'currency_id',
             'start_date',
             'end_date',
+            'p_start_date',
+            'end_date',
             'fa_percentage_fee',
             'project_summary',
             'progress_status',
             'edit_id',
         ]);
-        $this->mou_count = 1;
-        $this->mous[] = ['start_date' => '', 'end_date' => '', 'funding_amount' => ''];
+        $this->resetMous();
     }
     public function projectCreated($details)
     {

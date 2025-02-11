@@ -35,7 +35,7 @@
 
             <div class="mb-3 col-md-6">
                 <label for="project_code" class="form-label required">{{ __('Project/Study/Grant Code') }}</label>
-                <input type="text" id="project_code" class="form-control" wire:model.defer="project_code">
+                <input type="text" id="project_code" class="form-control" wire:model="project_code">
                 @error('project_code')
                     <div class="text-danger text-small">{{ $message }}</div>
                 @enderror
@@ -43,7 +43,7 @@
 
             <div class="mb-3 col-md-12">
                 <label for="name" class="form-label required">{{ __('Name') }}</label>
-                <input type="text" id="name" class="form-control" wire:model.defer="name">
+                <input type="text" id="name" class="form-control" wire:model="name">
                 @error('name')
                     <div class="text-danger text-small">{{ $message }}</div>
                 @enderror
@@ -54,7 +54,7 @@
 
             <div class="mb-3 col-md-6">
                 <label for="funding_source" class="form-label">{{ __('Funding Source') }}</label>
-                <input type="text" id="funding_source" class="form-control" wire:model.defer="funding_source">
+                <input type="text" id="funding_source" class="form-control" wire:model="funding_source">
                 @error('funding_source')
                     <div class="text-danger text-small">{{ $message }}</div>
                 @enderror
@@ -82,7 +82,7 @@
             <div class="mb-3 col-md-3">
                 <label for="fa_percentage_fee" class="form-label @if (!$fa_fee_exemption) required @endif">F&A%
                 </label>
-                <input type="number" id="fa_percentage_fee" class="form-control" wire:model.defer="fa_percentage_fee"
+                <input type="number" id="fa_percentage_fee" class="form-control" wire:model="fa_percentage_fee"
                     max="100" min="0">
                 @error('fa_percentage_fee')
                     <div class="text-danger text-small">{{ $message }}</div>
@@ -127,7 +127,7 @@
             </div>
             <div class="mb-3 col-md-6">
                 <label for="project_summary" class="form-label">{{ __('Project/Study/Grant Summary') }}</label>
-                <textarea id="project_summary" class="form-control" wire:model.defer="project_summary"></textarea>
+                <textarea id="project_summary" class="form-control" wire:model="project_summary"></textarea>
                 @error('project_summary')
                     <div class="text-danger text-small">{{ $message }}</div>
                 @enderror

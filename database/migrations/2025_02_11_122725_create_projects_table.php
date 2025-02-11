@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('merp_id')->nullable();
             $table->string('funding_source')->nullable();
-            $table->float('funds_received', 12, 2)->nullable();
+            $table->float('fa_percentage_fee', 12, 2)->nullable();
             $table->float('funding_amount', 12, 2)->nullable();
             $table->foreignId('currency_id')->nullable()->references('id')->on('fms_currencies')->constrained()->onUpdate('cascade')->onDelete('restrict');
             $table->date('start_date');

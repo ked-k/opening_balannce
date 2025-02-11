@@ -2,8 +2,10 @@
 
 namespace App\Models\Finance;
 
+use App\Models\Finance\FmsTransaction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -12,6 +14,38 @@ class Project extends Model
 {
     use HasFactory, LogsActivity;
 
+    public function requestable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(FmsTransaction::class, 'project_id', 'id');
+    }
+    public function getCurrentBalance($startDate = null, $endDate = null)
+    {
+        $debitTotal = $this->transactions()->when($this->startDate && $this->endDate, function ($query) {
+            $query->whereBetween('trx_date', [$this->startDate, $this->endDate]);
+        })->where('trx_type', 'Income')->sum('amount_local');
+        $creditTotal = $this->transactions()->when($this->startDate && $this->endDate, function ($query) {
+            $query->whereBetween('trx_date', [$this->startDate, $this->endDate]);
+        })->where('trx_type', 'Expense')->sum('amount_local');
+        return $debitTotal - $creditTotal;
+    }
+    protected $fillable = [
+        'project_type',
+        'project_category',
+        'project_code',
+        'name',
+        'funding_amount',
+        'currency_id',
+        'start_date',
+        'end_date',
+        'fa_percentage_fee',
+        'project_summary',
+        'progress_status',
+    ];
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

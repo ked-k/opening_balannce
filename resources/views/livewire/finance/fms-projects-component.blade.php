@@ -31,7 +31,7 @@
                                             <th>{{ __('End Date') }}</th>
                                             {{-- <th>{{ __('PI') }}</th> --}}
                                             {{-- <th>{{ __('Progress Status') }}</th> --}}
-                                            <th>{{ __('Current Balance') }}</th>
+                                            <th>{{ __('F&A %') }}</th>
                                             <th>{{ __('Status') }}</th>
                                             <th>{{ __('public.action') }}</th>
                                         </tr>
