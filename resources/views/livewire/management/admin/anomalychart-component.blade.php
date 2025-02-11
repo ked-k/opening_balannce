@@ -4,21 +4,18 @@
     </div>
     @push('scripts')
         <script>
-
-
-            
             // Monthly samples line chart
             var options2 = {
                 series: [{
                         name: 'Total Counts',
                         data: [
                             @foreach ($anomaly_counts as $data)
-                                        {{ $data->audit_count }},
+                                {{ $data->audit_count }},
                             @endforeach
                         ]
-                        
+
                     },
-                    
+
                 ],
                 chart: {
                     foreColor: '#9a9797',
@@ -84,7 +81,7 @@
                         shade: 'light',
                         type: "vertical",
                         shadeIntensity: 0.9,
-                        gradientToColors: ["#B2BE36", "#CDD380"],
+                        gradientToColors: ["#107C41", "#CDD380"],
                         inverseColors: true,
                         opacityFrom: 0.8,
                         opacityTo: 0.2,
@@ -92,12 +89,12 @@
                         //colorStops: []
                     }
                 },
-                colors: ["#B2BE36", "#CDD380"],
+                colors: ["#107C41", "#CDD380"],
                 xaxis: {
                     categories: [
                         @foreach ($anomaly_counts as $data)
-                                    '{{ $data->anomaly }}',
-                    @endforeach
+                            '{{ $data->anomaly }}',
+                        @endforeach
                     ]
 
                 },
@@ -113,10 +110,6 @@
 
             var tests_chart = new ApexCharts(document.querySelector("#anomalyCounts"), options2);
             tests_chart.render();
-
-
-        
         </script>
-    
     @endpush
 </div>

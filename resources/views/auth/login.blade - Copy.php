@@ -8,7 +8,7 @@
                 <div class="border p-4 rounded">
                     <div class="text-center">
                         <div class="d-inline-flex align-items-center justify-content-center mb-4 mt-2">
-                            <img src="{{ asset('assets/images/merp-logo.png') }}" alt="" style="width: 50%">
+                            <img src="{{ asset('assets/images/logo.png') }}" alt="" style="width: 50%">
                         </div>
                         {{-- <h3 class="">{{ __('public.signin') }}</h3>
                         <hr> --}}

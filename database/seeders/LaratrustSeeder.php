@@ -36,7 +36,7 @@ class LaratrustSeeder extends Seeder
                 'description' => ucwords(str_replace('_', ' ', $user_role)),
             ]);
 
-            $this->command->info('Creating Role '.strtoupper($user_role));
+            $this->command->info('Creating Role ' . strtoupper($user_role));
             $role_permissions = [];
             // Reading role permission modules
             foreach ($modules as $module => $permissions) {
@@ -48,7 +48,7 @@ class LaratrustSeeder extends Seeder
                         'target_module' => $module,
                     ])->id;
 
-                    $this->command->info('Creating Permission -->'.$permission);
+                    $this->command->info('Creating Permission -->' . $permission);
                 }
             }
 
@@ -68,9 +68,9 @@ class LaratrustSeeder extends Seeder
                     'signature' => null,
                     'created_by' => 1,
                     'password_updated_at' => now(),
-                    'email' => Str::lower($user_role).'@umeme.com',
+                    'email' => Str::lower($user_role) . '@makbrc.com',
                     'email_verified_at' => now(),
-                    'password' => bcrypt('admin@umeme'),
+                    'password' => bcrypt('admin@MakBRC'),
                     'remember_token' => Str::random(10),
                 ]);
                 $user->attachRole($role);
@@ -95,11 +95,11 @@ class LaratrustSeeder extends Seeder
                     'description' => ucwords(str_replace('_', ' ', $key)),
                 ]);
 
-                $this->command->info('Creating Default Role '.strtoupper($key));
+                $this->command->info('Creating Default Role ' . strtoupper($key));
                 $default_role_permissions = \App\Models\Permission::whereIn('name', $perms)->get()->pluck('id')->toArray();
 
                 $role->permissions()->sync($default_role_permissions);
-                $this->command->info('Assigned defaulted permissions to '.strtoupper($key));
+                $this->command->info('Assigned defaulted permissions to ' . strtoupper($key));
             }
         }
     }

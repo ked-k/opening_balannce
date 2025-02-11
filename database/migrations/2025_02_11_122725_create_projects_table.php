@@ -25,7 +25,7 @@ return new class extends Migration
             $table->float('funding_amount', 12, 2)->nullable();
             $table->foreignId('currency_id')->nullable()->references('id')->on('fms_currencies')->constrained()->onUpdate('cascade')->onDelete('restrict');
             $table->date('start_date');
-            $table->date('end_date');
+            $table->date('end_date')->nullable();
             $table->longText('project_summary')->nullable();
             $table->string('progress_status');
             $table->foreignId('created_by')->nullable()->constrained('users', 'id')->onUpdate('cascade')->onDelete('restrict');

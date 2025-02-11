@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'MERP') }}</title>
-    <link rel="icon" href="{{ asset('assets/images/favicon.png') }}" type="image/png" />
+    <link rel="icon" href="{{ asset('assets/images/logo.png') }}" type="image/png" />
     <!-- loader-->
     <link href="{{ asset('assets/css/pace.min.css') }}" rel="stylesheet" />
     <script src="{{ asset('assets/js/pace.min.js') }}"></script>
@@ -27,7 +27,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-white rounded fixed-top rounded-0 shadow-sm">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">
-                    <img src="{{ asset('assets/images/merp-logo.png') }}" width="140" alt="" />
+                    <img src="{{ asset('assets/images/logo.png') }}" width="140" alt="" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent1" aria-controls="navbarSupportedContent1"
@@ -67,7 +67,8 @@
                                     <div class="card-body">
                                         <h5 class="card-title">Human Resource</h5>
                                         <p class="card-text">Recruitment, Compensation and Employee relations. <a
-                                                href="{{route('human-resource-dashboard')}}" class="btn btn-sm btn-outline-success not_active">
+                                                href="{{ route('human-resource-dashboard') }}"
+                                                class="btn btn-sm btn-outline-success not_active">
                                                 <i class="bx bx-arrow-to-right me-1"></i></a></p>
                                     </div>
                                 </div>
@@ -86,7 +87,8 @@
                                     <div class="card-body">
                                         <h5 class="card-title">Inventory & Logistics</h5>
                                         <p class="card-text">Forecasting, Acquisition, Consumption, and Tracking. <a
-                                                href="{{route('inventory-dashboard')}}" class="btn btn-sm btn-outline-success not_active">
+                                                href="{{ route('inventory-dashboard') }}"
+                                                class="btn btn-sm btn-outline-success not_active">
                                                 <i class="bx bx-arrow-to-right me-1"></i></a></p>
                                     </div>
                                 </div>
@@ -105,7 +107,8 @@
                                     <div class="card-body">
                                         <h5 class="card-title">Assets Management</h5>
                                         <p class="card-text">Identification, Acquisition, Maintenance and Disposal. <a
-                                                href="{{route('assets-dashboard')}}" class="btn btn-sm btn-outline-success not_active">
+                                                href="{{ route('assets-dashboard') }}"
+                                                class="btn btn-sm btn-outline-success not_active">
                                                 <i class="bx bx-arrow-to-right me-1"></i></a></p>
                                     </div>
                                 </div>
@@ -124,7 +127,8 @@
                                     <div class="card-body">
                                         <h5 class="card-title">Finance & Accounting</h5>
                                         <p class="card-text">Budgeting, Accounting, Invoicing, and Requisition. <a
-                                                href="{{route('finance-dashboard')}}" class="btn btn-sm btn-outline-success not_active">
+                                                href="{{ route('finance-dashboard') }}"
+                                                class="btn btn-sm btn-outline-success not_active">
                                                 <i class="bx bx-arrow-to-right me-1"></i></a></p>
                                     </div>
                                 </div>
@@ -143,7 +147,8 @@
                                     <div class="card-body">
                                         <h5 class="card-title">Procurement</h5>
                                         <p class="card-text">Planning, Identification, Selection, and Aquisition. <a
-                                                href="{{route('procurement-dashboard')}}" class="btn btn-sm btn-outline-success not_active">
+                                                href="{{ route('procurement-dashboard') }}"
+                                                class="btn btn-sm btn-outline-success not_active">
                                                 <i class="bx bx-arrow-to-right me-1"></i></a></p>
                                     </div>
                                 </div>
@@ -162,7 +167,8 @@
                                     <div class="card-body">
                                         <h5 class="card-title">Document Control</h5>
                                         <p class="card-text">Reports, SoPs, Policies, Notices, and Templates. <a
-                                                href="{{route('documents-dashboard')}}" class="btn btn-sm btn-outline-success not_active">
+                                                href="{{ route('documents-dashboard') }}"
+                                                class="btn btn-sm btn-outline-success not_active">
                                                 <i class="bx bx-arrow-to-right me-1"></i></a></p>
                                     </div>
                                 </div>

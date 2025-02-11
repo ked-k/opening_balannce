@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\NetworkManagement\Institution;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
@@ -27,8 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (Auth::user()) {   // Check is user logged in
-            View::share('facilityInfo', Institution::where('id', auth()->user()->id)->first());
+        if (Auth::user()) { // Check is user logged in
+            View::share('facilityInfo', User::where('id', auth()->user()->id)->first());
         } else {
             View::share('facilityInfo', []);
         }
@@ -39,6 +39,13 @@ class AppServiceProvider extends ServiceProvider
 
         Blade::directive('number_formart', function ($figure) {
             return "<?php echo number_format($figure); ?>";
+        });
+        Blade::directive('formatDate', function ($expression) {
+            return $expression != null ? "<?php echo date('d-M-Y', strtotime($expression)); ?>" : "<?php echo 'N/A'; ?>";
+        });
+
+        Blade::directive('formatDateTime', function ($date) {
+            return $date != null ? "<?php echo date('d-M-Y H:i', strtotime($date)); ?>" : "<?php echo 'N/A'; ?>";
         });
     }
 }

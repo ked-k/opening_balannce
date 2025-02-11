@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/favicon.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo.png')}}">
     <title>@yield('title')</title>
     <!-- Bootstrap Core CSS -->
     <link href="{{ asset('assets/plugins/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
@@ -64,7 +64,7 @@
         <!-- Right sidebar -->
         <!-- ============================================================== -->
         <!-- .right-sidebar -->
-        
+
         <!-- ============================================================== -->
         <!-- End Right sidebar -->
         <!-- ============================================================== -->
@@ -96,7 +96,7 @@
     <script src="{{ asset('assets/plugins/styleswitcher/jQuery.style.switcher.js')}}"></script>
     <script src="{{ asset('assets/js/custom.min.js')}}"></script>
     <script src="{{ asset('assets/js/jquery.PrintArea.js')}}" type="text/JavaScript"></script>
-    
+
     <script src="{{ asset('assets/plugins/apexcharts-bundle/js/apexcharts.min.js') }}"></script>
     @stack('scripts')
     <script src="{{ asset('assets/plugins/izitoast/js/iziToast.min.js') }}"></script>

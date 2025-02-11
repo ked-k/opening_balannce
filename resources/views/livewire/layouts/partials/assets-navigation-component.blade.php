@@ -1,7 +1,7 @@
 <div class="sidebar-wrapper" data-simplebar="true">
     <div class="sidebar-header">
         <div>
-            <img src="{{ asset('assets/images/merp-logo.png') }}" class="logo-icon" alt="logo icon">
+            <img src="{{ asset('assets/images/logo.png') }}" class="logo-icon" alt="logo icon">
         </div>
         <div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
         </div>
@@ -41,12 +41,10 @@
                 <div class="menu-title">{{ __('Asset Issues and Maintenance') }}</div>
             </a>
             <ul>
-                <li> <a href="#"><i
-                            class="bx bx-right-arrow-alt"></i>{{ __('Issues') }}</a>
+                <li> <a href="#"><i class="bx bx-right-arrow-alt"></i>{{ __('Issues') }}</a>
                 </li>
 
-                <li> <a href="#"><i
-                    class="bx bx-right-arrow-alt"></i>{{ __('Maintenance') }}</a>
+                <li> <a href="#"><i class="bx bx-right-arrow-alt"></i>{{ __('Maintenance') }}</a>
                 </li>
             </ul>
         </li>
