@@ -54,7 +54,7 @@ class FmsProjectsComponent extends Component
     public $funding_source;
     public $project_summary;
     public $progress_status;
-
+    public $grant_code;
     public $project;
     public $project_id;
     public $loadingInfo = '';
@@ -132,7 +132,7 @@ class FmsProjectsComponent extends Component
         // $this->associated_institution = $project->associated_institution;
         $this->project_code = $project->project_code;
         $this->name = $project->name;
-        // $this->grant_id = $project->grant_id??null;
+        $this->grant_code = $project->grant_code ?? null;
         // $this->sponsor_id = $project->sponsor_id;
         $this->funding_source = $project->funding_source;
         $this->currency_id = $project->currency_id;
@@ -177,6 +177,7 @@ class FmsProjectsComponent extends Component
                 [
                     'project_type' => $this->project_type,
                     'project_category' => $this->project_category,
+                    'grant_code' => $this->grant_code,
                     'project_code' => $this->project_code,
                     'name' => $this->name,
                     'merp_id' => $this->merp_id,
@@ -241,6 +242,7 @@ class FmsProjectsComponent extends Component
             'progress_status',
             'edit_id',
             'merp_id',
+            'grant_code',
         ]);
         $this->resetMous();
         $this->savedMous = collect([]);

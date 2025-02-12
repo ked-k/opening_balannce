@@ -34,13 +34,19 @@
 
 
             <div class="mb-3 col-md-6">
-                <label for="project_code" class="form-label required">{{ __('Project/Study/Grant Code') }}</label>
+                <label for="project_code" class="form-label required">{{ __('Project/Study Acronym') }}</label>
                 <input type="text" id="project_code" class="form-control" wire:model="project_code">
                 @error('project_code')
                     <div class="text-danger text-small">{{ $message }}</div>
                 @enderror
             </div>
-
+            <div class="mb-3 col-md-3">
+                <label for="grant_code" class="form-label required">Grant Code</label>
+                <input id="grant_code" class="form-control" wire:model.defer="grant_code">
+                @error('grant_code')
+                    <div class="text-danger text-small">{{ $message }}</div>
+                @enderror
+            </div>
             <div class="mb-3 col-md-12">
                 <label for="name" class="form-label required">{{ __('Name') }}</label>
                 <input type="text" id="name" class="form-control" wire:model="name">
@@ -89,14 +95,7 @@
                 @enderror
             </div>
 
-            <div class="mb-3 col-md-3">
-                <label for="start_date" class="form-label required">Start Date</label>
-                <input min='12-12-2024' type="date" id="start_date" class="form-control"
-                    wire:model.defer="p_start_date">
-                @error('start_date')
-                    <div class="text-danger text-small">{{ $message }}</div>
-                @enderror
-            </div>
+
 
             {{-- <div class="mb-3 col-md-3">
                 <label for="end_date" class="form-label required">End Date</label>
@@ -109,17 +108,17 @@
                 <label for="progress_status" class="form-label required">{{ __('Progress Status') }}</label>
                 <select class="form-control" id="progress_status" wire:model.lazy="progress_status">
                     <option selected value="">Select</option>
-                    <option value="Planning">Planning</option>
-                    <option value="Pending Funding">Pending Funding</option>
+                    {{-- <option value="Planning">Planning</option> --}}
+                    {{-- <option value="Pending Funding">Pending Funding</option> --}}
                     <option value="Implementation">Implementation</option>
                     <option value="In Progress">In Progress</option>
-                    <option value="Data Analysis">Data Analysis</option>
+                    {{-- <option value="Data Analysis">Data Analysis</option>
                     <option value="Evaluation">Evaluation</option>
                     <option value="Reporting">Reporting</option>
-                    <option value="Transition">Transition</option>
+                    <option value="Transition">Transition</option> --}}
                     <option value="Completed">Completed</option>
                     <option value="On-hold">On Hold</option>
-                    <option value="Terminated">Terminated</option>3
+                    {{-- <option value="Terminated">Terminated</option> --}}
                 </select>
                 @error('progress_status')
                     <div class="text-danger text-small">{{ $message }}</div>
