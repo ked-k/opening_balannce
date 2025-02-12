@@ -14,19 +14,20 @@
 
                 <li> <a class="waves-effect waves-dark" href="{{ route('projects') }}"><i class="fa fa-file"></i><span
                             class="hide-menu">Project Lists </span></a></li>
-                <li> <a class="waves-effect waves-dark" href="{{ route('trx_categories') }}"><i
-                            class="fa fa-file-text"></i><span class="hide-menu">Transaction Types</span></a></li>
-                <li> <a class="waves-effect waves-dark" href="{{ route('currencies') }}"><i
-                            class="fa fa-money"></i><span class="hide-menu">Currencies </span></a></li>
 
                 <li> <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i
                             class="fa fa-file-o"></i><span class="hide-menu">Transactions</span></a>
                     <ul aria-expanded="false" class="collapse">
                         <li><a href="{{ route('transactions', 'all') }}">All Transactions</a></li>
-                        <li><a href="{{ route('transactions', 'income') }}">Income Transactions</a></li>
+                        <li><a href="{{ route('transactions', 'Income') }}">Income Transactions</a></li>
                         <li><a href="{{ route('transactions', 'Expense') }}">Expense Transactions</a></li>
                     </ul>
                 </li>
+                <li> <a class="waves-effect waves-dark" href="{{ route('trx_categories') }}"><i
+                            class="fa fa-file-text"></i><span class="hide-menu">Transaction Types</span></a></li>
+                <li> <a class="waves-effect waves-dark" href="{{ route('currencies') }}"><i
+                            class="fa fa-money"></i><span class="hide-menu">Currencies </span></a></li>
+
                 @if (Auth::user()->hasPermission(['create_meter_audit']))
                     <li> <a class="waves-effect waves-dark" href="#"><i class="fa fa-file"></i><span
                                 class="hide-menu">Reports </span></a></li>

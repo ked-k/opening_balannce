@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Blade::directive('money_format', function ($figure) {
-            return "<?php echo number_format($figure,3); ?>";
+            return "<?php echo number_format($figure,2); ?>";
         });
 
         Blade::directive('number_formart', function ($figure) {

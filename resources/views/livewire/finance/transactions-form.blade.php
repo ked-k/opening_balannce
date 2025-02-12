@@ -1,4 +1,7 @@
-<form wire:submit.prevent="storeTransaction">
+<form
+    @if ($editMode) wire:submit.prevent="updateTransaction"
+    @else
+    wire:submit.prevent="storeTransaction" @endif>
     @include('layouts.messages')
     <div class="modal-body">
         <div class="row">

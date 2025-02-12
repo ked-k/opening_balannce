@@ -52,6 +52,15 @@ class FmsTransactionsComponent extends Component
     public $status;
     public $description;
     public $delete_id;
+    public function mount($type)
+    {
+        if ($type == 'all') {
+            $this->trx_type = null;
+        } else {
+            $this->trx_type = $type;
+        }
+
+    }
     public function close()
     {
         $this->resetInputs();
@@ -102,6 +111,7 @@ class FmsTransactionsComponent extends Component
             'status',
             'description',
         ]);
+        $this->editMode = false;
 
     }
     public function storeTransaction()
@@ -163,19 +173,79 @@ class FmsTransactionsComponent extends Component
         }
     }
 
+    public function updateTransaction()
+    {
+        $this->validate([
+            // 'trx_no' => 'required',
+            'trx_ref' => 'required',
+            'trx_date' => 'required',
+            'client' => 'required',
+            'total_amount' => 'required',
+            'amount_local' => 'required',
+            // 'deductions' => 'required',
+            'rate' => 'required',
+            'project_id' => 'required',
+            'currency_id' => 'required',
+            'expense_type_id' => 'required',
+            'ledger_account' => 'nullable',
+            'trx_type' => 'required',
+            // 'entry_type' => 'required',
+            'description' => 'required',
+        ]);
+        try {
+            DB::transaction(function () {
+                $total_amount = (float) str_replace(',', '', $this->total_amount);
+                $tax = 0;
+                $payable = Project::where('id', $this->project_id)->first();
+                // $cashAccount->update();
+                $trans = FmsTransaction::where('id', $this->edit_id)->first();
+                $trans->trx_no = 'Trx' . time();
+                $trans->trx_ref = $this->trx_ref;
+                $trans->trx_date = $this->trx_date;
+                $trans->client = $this->client;
+                $trans->total_amount = $this->total_amount;
+                $trans->amount_local = $this->amount_local;
+                $trans->deductions = 0;
+                $trans->rate = $this->rate;
+                $trans->project_id = $this->project_id;
+                $trans->currency_id = $this->currency_id;
+                $trans->expense_type_id = $this->expense_type_id;
+                $trans->ledger_account = $this->ledger_account;
+                $trans->trx_type = $this->trx_type;
+                $trans->entry_type = 'OP';
+                $trans->description = $this->description;
+                $trans->requestable()->associate($payable);
+                $trans->save();
+
+                $this->dispatchBrowserEvent('close-modal');
+                $this->resetInputs();
+                $this->entry_type = null;
+                $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Transaction updated successfully!']);
+            });
+        } catch (\Exception $e) {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'warning',
+                'message' => 'Oops! Something Went Wrong!',
+                'text' => 'Transaction failed!' . $e->getMessage(),
+            ]);
+            $this->dispatchBrowserEvent('alert', ['type' => 'error', 'message' => 'Transaction failed!' . $e->getMessage()]);
+        }
+    }
+
     public function mainQuery()
     {
         $data = FmsTransaction::with('requestable')
             ->when($this->from_date != '' && $this->to_date != '', function ($query) {
                 $query->whereBetween('created_at', [$this->from_date, $this->to_date]);
-            }, function ($query) {
-                return $query;
+            })
+            ->when($this->trx_type != '', function ($query) {
+                $query->where('trx_type', $this->trx_type);
             });
 
         return $data;
     }
 
-    public function editTransaction($id)
+    public function editData($id)
     {
         $trans = FmsTransaction::where('id', $id)->with('requestable')->first();
         $this->edit_id = $trans->id;
@@ -183,13 +253,14 @@ class FmsTransactionsComponent extends Component
         $this->trx_date = $trans->trx_date;
         $this->rate = $trans->rate;
         $this->amount_local = $trans->amount_local;
-        $this->deductions = $trans->deductions;
+        $this->expense_type_id = $trans->expense_type_id;
         $this->project_id = $trans->project_id;
         $this->currency_id = $trans->currency_id;
-        $this->ledger_account = $trans->ledger_account;
-        $this->entry_type = $trans->entry_type;
+        $this->client = $trans->client;
+        $this->trx_type = $trans->trx_type;
         $this->description = $trans->description;
         $this->total_amount = $trans->total_amount;
+        $this->editMode = true;
     }
     public function render()
     {
