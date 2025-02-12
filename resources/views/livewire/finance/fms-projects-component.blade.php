@@ -62,7 +62,7 @@
                                                             wire:click="loadProject({{ $project->id }})"
                                                             title="{{ __('public.edit') }}">
                                                             <i class="fa fa-edit fs-18"></i></button>
-                                                        <button class="btn btn-sm btn-outline-success m-1"
+                                                        <button class="btn btn-sm btn-outline-danger m-1"
                                                             wire:click="$set('delete_id','{{ $project->id }}')"
                                                             title="{{ __('public.delete project') }}">
                                                             <i class="fa fa-trash fs-18"></i></button>
