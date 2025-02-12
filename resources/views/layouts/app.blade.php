@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,19 +9,19 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo.png') }}">
     <title>@yield('title')</title>
     <!-- Bootstrap Core CSS -->
-    <link href="{{ asset('assets/plugins/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('assets/plugins/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="{{ asset('assets/css/style.css')}}" rel="stylesheet">
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <!-- You can change the theme colors from here -->
-    <link href="{{ asset('assets/css/colors/blue.css')}}" id="theme" rel="stylesheet">
-        <!-- iziToast CSS -->
+    <link href="{{ asset('assets/css/colors/blue.css') }}" id="theme" rel="stylesheet">
+    <!-- iziToast CSS -->
     <link href="{{ asset('assets/plugins/izitoast/css/iziToast.min.css') }}" rel="stylesheet" type="text/css">
- {{-- <script src="{{ asset('assets/plugins/apexcharts-bundle/css/apexcharts.css') }}"></script> --}}
+    {{-- <script src="{{ asset('assets/plugins/apexcharts-bundle/css/apexcharts.css') }}"></script> --}}
     @livewireStyles
-        <!-- Push CSS -->
+    <!-- Push CSS -->
     @stack('css')
 
 </head>
@@ -33,7 +32,9 @@
     <!-- ============================================================== -->
     <div class="preloader">
         <svg class="circular" viewBox="25 25 50 50">
-            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" /> </svg>
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2"
+                stroke-miterlimit="10" />
+        </svg>
     </div>
     <!-- ============================================================== -->
     <!-- Main wrapper - style you can find in pages.scss -->
@@ -77,25 +78,25 @@
     <!-- ============================================================== -->
     <!-- All Jquery -->
     <!-- ============================================================== -->
-    <script src="{{ asset('assets/plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap tether Core JavaScript -->
-    <script src="{{ asset('assets/plugins/bootstrap/js/popper.min.js')}}"></script>
+    <script src="{{ asset('assets/plugins/bootstrap/js/popper.min.js') }}"></script>
 
-    <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.min.js')}}"></script>
+    <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.min.js') }}"></script>
     <!-- slimscrollbar scrollbar JavaScript -->
-    <script src="{{ asset('assets/js/jquery.slimscroll.js')}}"></script>
+    <script src="{{ asset('assets/js/jquery.slimscroll.js') }}"></script>
     <!--Wave Effects -->
-    <script src="{{ asset('assets/js/waves.js')}}"></script>
+    <script src="{{ asset('assets/js/waves.js') }}"></script>
     <!--Menu sidebar -->
-    <script src="{{ asset('assets/js/sidebarmenu.js')}}"></script>
+    <script src="{{ asset('assets/js/sidebarmenu.js') }}"></script>
     <!--stickey kit -->
-    <script src="{{ asset('assets/plugins/sticky-kit-master/dist/sticky-kit.min.js')}}"></script>
-    <script src="{{ asset('assets/plugins/sparkline/jquery.sparkline.min.js')}}"></script>
+    <script src="{{ asset('assets/plugins/sticky-kit-master/dist/sticky-kit.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/sparkline/jquery.sparkline.min.js') }}"></script>
     <!--Custom JavaScript -->
 
-    <script src="{{ asset('assets/plugins/styleswitcher/jQuery.style.switcher.js')}}"></script>
-    <script src="{{ asset('assets/js/custom.min.js')}}"></script>
-    <script src="{{ asset('assets/js/jquery.PrintArea.js')}}" type="text/JavaScript"></script>
+    <script src="{{ asset('assets/plugins/styleswitcher/jQuery.style.switcher.js') }}"></script>
+    <script src="{{ asset('assets/js/custom.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.PrintArea.js') }}" type="text/JavaScript"></script>
 
     <script src="{{ asset('assets/plugins/apexcharts-bundle/js/apexcharts.min.js') }}"></script>
     @stack('scripts')
@@ -105,19 +106,19 @@
     <script src="{{ asset('assets/js/sort.js') }}"></script>
     <script src="{{ asset('assets/js/xlsx.full.min.js') }}"></script>
     <script>
-    $(document).ready(function() {
-        $("#print").click(function() {
-            var mode = 'iframe'; //popup
-            var close = mode == "popup";
-            var options = {
-                mode: mode,
-                popClose: close
-            };
-            $("div.printableArea").printArea(options);
+        $(document).ready(function() {
+            $("#print").click(function() {
+                var mode = 'iframe'; //popup
+                var close = mode == "popup";
+                var options = {
+                    mode: mode,
+                    popClose: close
+                };
+                $("div.printableArea").printArea(options);
+            });
         });
-    });
     </script>
-     <script>
+    <script>
         $(document).ready(function() {
             $('#example1').DataTable();
             $(document).ready(function() {
@@ -140,7 +141,9 @@
                             page: 'current'
                         }).data().each(function(group, i) {
                             if (last !== group) {
-                                $(rows).eq(i).before('<tr class="group"><td colspan="5">' + group + '</td></tr>');
+                                $(rows).eq(i).before(
+                                    '<tr class="group"><td colspan="5">' + group +
+                                    '</td></tr>');
                                 last = group;
                             }
                         });
@@ -163,70 +166,91 @@
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ]
         });
-        </script>
- @livewireScripts
- <script>
-     window.addEventListener('alert', event => {
+    </script>
+    @livewireScripts
+    <script>
+        window.addEventListener('alert', event => {
 
-         if (event.detail.type == 'success') {
-             iziToast.success({
-                 title: 'Success!',
-                 message: `${event.detail.message}`,
-                 timeout: 5000,
-                 position: 'topRight'
-             });
-         }
+            if (event.detail.type == 'success') {
+                iziToast.success({
+                    title: 'Success!',
+                    message: `${event.detail.message}`,
+                    timeout: 5000,
+                    position: 'topRight'
+                });
+            }
 
-         if (event.detail.type == 'Error') {
-             iziToast.error({
-                 title: 'Error!',
-                 message: `${event.detail.message}`,
-                 timeout: 5000,
-                 position: 'topRight'
-             });
-         }
+            if (event.detail.type == 'Error') {
+                iziToast.error({
+                    title: 'Error!',
+                    message: `${event.detail.message}`,
+                    timeout: 5000,
+                    position: 'topRight'
+                });
+            }
 
-         if (event.detail.type == 'warning') {
-             iziToast.warning({
-                 title: 'Warning!',
-                 message: `${event.detail.message}`,
-                 timeout: 5000,
-                 position: 'topRight'
-             });
-         }
-     });
+            if (event.detail.type == 'warning') {
+                iziToast.warning({
+                    title: 'Warning!',
+                    message: `${event.detail.message}`,
+                    timeout: 5000,
+                    position: 'topRight'
+                });
+            }
+        });
 
-     window.addEventListener('switch-theme', event => {
-         $("html").attr("class", `${event.detail.theme}`)
-     });
+        window.addEventListener('switch-theme', event => {
+            $("html").attr("class", `${event.detail.theme}`)
+        });
 
-     window.addEventListener('swal:modal', event => {
-         swal({
-             title: event.detail.message,
-             text: event.detail.text,
-             icon: event.detail.type,
-         });
-     });
+        window.addEventListener('swal:modal', event => {
+            swal({
+                title: event.detail.message,
+                text: event.detail.text,
+                icon: event.detail.type,
+            });
+        });
 
-     window.addEventListener('swal:confirm', event => {
-         swal({
-                 title: event.detail.message,
-                 text: event.detail.text,
-                 icon: event.detail.type,
-                 buttons: true,
-                 dangerMode: true,
-             })
-             .then((willDelete) => {
-                 if (willDelete) {
-                     window.livewire.emit('remove');
-                 } else {
-                     window.livewire.emit('cancel');
-                 }
-             });
-     });
- </script>
+        window.addEventListener('swal:confirm', event => {
+            swal({
+                    title: event.detail.message,
+                    text: event.detail.text,
+                    icon: event.detail.type,
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        window.livewire.emit('remove');
+                    } else {
+                        window.livewire.emit('cancel');
+                    }
+                });
+        });
+    </script>
+    <script>
+        function formatAmount(input) {
+            var value = input.value.replace(/,/g, ''); // Remove existing commas
 
- @stack('scripts')
+            // Remove non-numeric and non-decimal characters
+            value = value.replace(/[^0-9.]/g, '');
+
+            // Ensure there's only one decimal point
+            var parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+
+            var formattedValue = addCommasToNumber(value);
+
+            input.value = formattedValue;
+        }
+
+        function addCommasToNumber(value) {
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+    </script>
+    @stack('scripts')
 </body>
 
 </html>
