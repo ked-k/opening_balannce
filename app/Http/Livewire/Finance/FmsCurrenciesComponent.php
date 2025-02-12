@@ -77,7 +77,6 @@ class FmsCurrenciesComponent extends Component
             'code' => 'required|string',
             'system_default' => 'required|integer',
             'exchange_rate' => 'required|numeric',
-
         ]);
 
         if ($this->system_default == false) {
@@ -185,7 +184,6 @@ class FmsCurrenciesComponent extends Component
             }, function ($query) {
                 return $query;
             });
-
         $this->currencyIds = $currencies->pluck('id')->toArray();
 
         return $currencies;

@@ -5,6 +5,7 @@ use App\Http\Livewire\Finance\FmsCurrenciesComponent;
 use App\Http\Livewire\Finance\FmsProjectsComponent;
 use App\Http\Livewire\Finance\FmsTransactionsComponent;
 use App\Http\Livewire\Finance\FmsTrxCategoriesComponent;
+use App\Http\Livewire\Finance\FmsViewProjectComponent;
 use App\Http\Livewire\Management\AdminDashboard;
 use App\Http\Livewire\UserManagement\UserProfileComponent;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,7 @@ Route::group(['middleware' => ['auth', 'suspended_user']], function () {
     //   })->middleware(['auth', 'verified'])->name('home');
     Route::get('dashboard', AdminDashboard::class)->name('home');
     Route::get('transactions/{type}', FmsTransactionsComponent::class)->name('transactions');
+    Route::get('transactions/{id}/details', FmsViewProjectComponent::class)->name('project_transactions');
     Route::get('projects', FmsProjectsComponent::class)->name('projects');
 
     Route::group(['prefix' => 'admin'], function () {
