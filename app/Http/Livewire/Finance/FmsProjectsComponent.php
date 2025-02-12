@@ -134,6 +134,7 @@ class FmsProjectsComponent extends Component
     public function deleteProjectMou($id)
     {
         ProjectMou::where('id', $id)->delete();
+        $this->loadProject($this->edit_id);
         $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Project MOU details deleted successfully']);
 
     }
