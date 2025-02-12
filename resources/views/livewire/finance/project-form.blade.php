@@ -193,10 +193,18 @@
                                     <td>{{ $savedMou->funding_amount }}</td>
                                     <td>
                                         <div class="d-flex justify-content-between">
-                                            <button class="btn btn-sm btn-outline-success m-1" data-toggle="modal"
-                                                data-target="#addnew" wire:click="deleteMou({{ $project->id }})"
+                                            <a class="btn btn-sm btn-outline-success m-1"
+                                                wire:click="$set('mou_delete_id',{{ $savedMou->id }})"
                                                 title="{{ __('public.delete') }}">
-                                                <i class="fa fa-trash fs-18"></i></button>
+                                                <i class="fa fa-trash fs-18"></i></a>
+                                            @if ($savedMou->id == $mou_delete_id)
+                                                <a class="text-warning m-1"
+                                                    wire:click="deleteProjectMou({{ $savedMou->id }})"
+                                                    title="{{ __('public.delete mou') }}">
+                                                    <i class="fa fa-check fs-18"></i></a>
+                                                <a class="text-info m-1" wire:click="$set('mou_delete_id','')">
+                                                    <i class="fa fa-close fs-18"></i></a>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

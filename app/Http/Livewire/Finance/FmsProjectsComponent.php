@@ -63,6 +63,8 @@ class FmsProjectsComponent extends Component
     public $p_start_date;
     public $merp_id;
     public $savedMous;
+    public $delete_id;
+    public $mou_delete_id;
 
     protected $listeners = [
         'loadProject',
@@ -121,6 +123,20 @@ class FmsProjectsComponent extends Component
         }
     }
 
+    public function deleteProject($id)
+    {
+        // $this->delete_id = $id;
+        ProjectMou::where('project_id', $id)->delete();
+        Project::where('id', $id)->delete();
+        $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Project/study details deleted successfully']);
+
+    }
+    public function deleteProjectMou($id)
+    {
+        ProjectMou::where('id', $id)->delete();
+        $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Project MOU details deleted successfully']);
+
+    }
     public function loadProject($id)
     {
         $this->edit_id = $id;
@@ -214,6 +230,7 @@ class FmsProjectsComponent extends Component
                 }
             }
             $this->resetInputs();
+            $this->dispatchBrowserEvent('close-modal');
             $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Project/study details created successfully']);
 
         });

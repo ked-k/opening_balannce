@@ -62,7 +62,19 @@
                                                             wire:click="loadProject({{ $project->id }})"
                                                             title="{{ __('public.edit') }}">
                                                             <i class="fa fa-edit fs-18"></i></button>
+                                                        <button class="btn btn-sm btn-outline-success m-1"
+                                                            wire:click="$set('delete_id','{{ $project->id }}')"
+                                                            title="{{ __('public.delete project') }}">
+                                                            <i class="fa fa-trash fs-18"></i></button>
                                                     </div>
+                                                    @if ($project->id == $delete_id)
+                                                        <a class="text-warning m-1"
+                                                            wire:click="deleteProject({{ $project->id }})"
+                                                            title="{{ __('public.delete project') }}">
+                                                            <i class="fa fa-check fs-18"></i></a>
+                                                        <a class="text-info m-1" wire:click="$set('delete_id','')">
+                                                            <i class="fa fa-close fs-18"></i></a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @empty
@@ -83,7 +95,7 @@
             </div>
         </div>
         <div wire:ignore.self class="modal fade" id="addnew" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
+            aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
