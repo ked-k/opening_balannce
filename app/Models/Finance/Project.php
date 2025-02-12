@@ -94,6 +94,6 @@ class Project extends Model
             ->orWhere('project_category', 'like', '%' . $search . '%')
             ->orWhere('project_type', 'like', '%' . $search . '%')
             ->orWhere('name', 'like', '%' . $search . '%')
-            ->orWhere('email', 'like', '%' . $search . '%');
+            ->orWhere('grant_code', 'like', '%' . $search . '%');
     }
 }

@@ -53,8 +53,6 @@
                                                 <td><span
                                                         class="badge bg-success">{{ ucfirst($project->progress_status) }}</span>
                                                 </td>
-
-
                                                 <td>
                                                     <div class="d-flex justify-content-between">
                                                         <button class="btn btn-sm btn-outline-success m-1"
