@@ -28,8 +28,8 @@
                                             <th>{{ __('Category') }}</th>
                                             <th>{{ __('Funding') }}</th>
                                             <th>{{ __('Current Balance') }}</th>
-                                            <th>{{ __('Start Date') }}</th>
-                                            <th>{{ __('End Date') }}</th>
+                                            {{-- <th>{{ __('Start Date') }}</th>
+                                            <th>{{ __('End Date') }}</th> --}}
                                             {{-- <th>{{ __('PI') }}</th> --}}
                                             {{-- <th>{{ __('Progress Status') }}</th> --}}
                                             <th>{{ __('F&A %') }}</th>
@@ -45,8 +45,8 @@
                                                 <td>{{ $project->project_category }}</td>
                                                 <td>@money_format($project->fundingBalance())</td>
                                                 <td>@money_format($project->getCurrentBalance())</td>
-                                                <td>@formatDate($project->start_date)</td>
-                                                <td>@formatDate($project->end_date)</td>
+                                                {{-- <td>@formatDate($project->start_date)</td>
+                                                <td>@formatDate($project->end_date)</td> --}}
                                                 {{-- <td>{{ $project->principalInvestigator?->fullName ?? 'N/A' }}</td> --}}
                                                 <td>{{ $project->fa_percentage_fee }}
                                                 </td>

@@ -39,6 +39,7 @@ class Project extends Model
         'project_code',
         'name',
         'funding_amount',
+        'grant_code',
         'currency_id',
         'start_date',
         'end_date',
