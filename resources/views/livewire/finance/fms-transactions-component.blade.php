@@ -35,7 +35,7 @@
                                     @foreach ($transactions as $key => $transaction)
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
-                                            <td>{{ $transaction->requestable->name ?? '' }}</td>
+                                            <td>{{ $transaction->requestable->project_code ?? '' }}</td>
                                             <td>{{ $transaction->trx_no ?? '' }}</td>
                                             <td>{{ $transaction->trx_date ?? 'N/A' }}</td>
                                             <td>{{ $transaction->trx_type }}</td>
