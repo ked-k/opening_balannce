@@ -144,7 +144,7 @@ class FmsTransactionsComponent extends Component
                 $trans->trx_ref = $this->trx_ref;
                 $trans->trx_date = $this->trx_date;
                 $trans->client = $this->client;
-                $trans->total_amount = $this->total_amount;
+                $trans->total_amount = $total_amount;
                 $trans->amount_local = $this->amount_local;
                 $trans->deductions = 0;
                 $trans->rate = $this->rate;
@@ -203,7 +203,7 @@ class FmsTransactionsComponent extends Component
                 $trans->trx_ref = $this->trx_ref;
                 $trans->trx_date = $this->trx_date;
                 $trans->client = $this->client;
-                $trans->total_amount = $this->total_amount;
+                $trans->total_amount = $total_amount;
                 $trans->amount_local = $this->amount_local;
                 $trans->deductions = 0;
                 $trans->rate = $this->rate;
