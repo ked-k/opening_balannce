@@ -37,7 +37,7 @@
                                             <td>{{ $key + 1 }}</td>
                                             <td>{{ $transaction->requestable->project_code ?? '' }}</td>
                                             <td>{{ $transaction->trx_ref ?? '' }}</td>
-                                            <td>{{ $transaction->trx_date ?? 'N/A' }}</td>
+                                            <td>@formatDate($transaction->trx_date)</td>
                                             <td>{{ $transaction->trx_type }}</td>
                                             <td>{{ $transaction->currency->code ?? 'UGX' }}</td>
                                             <td>@money_format($transaction->total_amount)</td>
