@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire\Finance;
 
+use App\Models\Finance\ExpenseType;
+use App\Models\Finance\FmsCurrencies;
 use App\Models\Finance\FmsTransaction;
 use App\Models\Finance\Project;
 use Illuminate\Support\Facades\DB;
@@ -45,13 +47,44 @@ class FmsTransactionsComponent extends Component
     public $currency_id;
     public $expense_type_id;
     public $ledger_account;
-    public $trx_type;
+    public $trx_type = 'Expense';
     public $entry_type;
     public $status;
     public $description;
+    public $delete_id;
+    public function close()
+    {
+        $this->resetInputs();
+    }
+    public function updatedCurrencyId()
+    {
+        $latestRate = FmsCurrencies::where('id', $this->currency_id)->latest()->first();
+
+        if ($latestRate) {
+            $this->rate = $latestRate->exchange_rate;
+            $this->updatedTotalAmount();
+
+        }
+    }
+    public function deleteTransaction($id)
+    {
+        FmsTransaction::where('id', $id)->delete();
+        $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Transaction deleted successfully!']);
+
+    }
+    public function updatedTotalAmount()
+    {
+        $total_amount = (float) str_replace(',', '', $this->total_amount);
+        $rate = (float) str_replace(',', '', $this->rate);
+        if (is_numeric($total_amount) && is_numeric($rate)) {
+            $amount_local = $rate * $total_amount;
+            $this->amount_local = round($amount_local, 2);
+
+        }
+    }
     public function resetInputs()
     {
-        $this->rest([
+        $this->reset([
             'trx_no',
             'trx_ref',
             'trx_date',
@@ -74,112 +107,22 @@ class FmsTransactionsComponent extends Component
     public function storeTransaction()
     {
         $this->validate([
-            'trx_date' => 'required|date',
-            'trx_ref' => 'required|unique:fms_transactions',
+            // 'trx_no' => 'required',
+            'trx_ref' => 'required',
+            'trx_date' => 'required',
+            'client' => 'required',
             'total_amount' => 'required',
-            'coa_id' => 'required|integer',
-            'bank_id' => 'required|numeric',
-            'supplier_id' => 'nullable|numeric',
-            'employee_id' => 'nullable|numeric',
-            'rate' => 'required|numeric',
-            'tax_value' => 'nullable|numeric',
-            'tax_id' => 'nullable|numeric',
-            'fiscal_year' => 'required|integer',
-            'department_id' => 'nullable|integer',
-            'project_id' => 'nullable|integer',
-            'billed_project' => 'nullable|integer',
-            'billed_department' => 'nullable|integer',
-            'currency_id' => 'required|integer',
-            'given_to' => 'required',
-            'budgetExpense' => 'required',
-            'ledgerExpense' => 'required',
-            'budget_line_id' => 'nullable|integer',
-            'ledger_account' => 'nullable|integer',
-            'description' => 'required|string',
-            'trx_entry_type' => 'Required',
-            'bank_expense' => 'min:1',
+            'amount_local' => 'required',
+            // 'deductions' => 'required',
+            'rate' => 'required',
+            'project_id' => 'required',
+            'currency_id' => 'required',
+            'expense_type_id' => 'required',
+            'ledger_account' => 'nullable',
+            'trx_type' => 'required',
+            // 'entry_type' => 'required',
+            'description' => 'required',
         ]);
-        $requestable = null;
-        $payable = null;
-        $additional_data = [];
-        if ($this->entry_type == 'Project') {
-            $this->validate([
-                'project_id' => 'required|integer',
-            ]);
-            $this->department_id = null;
-            $requestable = Project::find($this->project_id);
-        } elseif ($this->entry_type == 'Department') {
-            $this->validate([
-                'department_id' => 'required|integer',
-            ]);
-            if ($this->department_id == 0 && $this->ledger_account == 0) {
-                $requestable = CompanyProfile::latest()->first();
-            } else {
-                $this->project_id = null;
-                $requestable = Department::find($this->department_id);
-            }
-        } else {
-            $requestable = CompanyProfile::latest()->first();
-        }
-        if ($this->given_to == 'Employee') {
-            $this->validate([
-                'employee_id' => 'required|integer',
-            ]);
-            $this->supplier_id = null;
-            $payable = Employee::find($this->employee_id);
-            $additional_data = [
-                'name' => $payable->fullName,
-                'email' => $payable->email,
-                'contact' => $payable->contact,
-                'account_name' => $payable->account_name ?? 'N/A',
-                'account' => $payable->bank_account ?? 'N/A',
-                'bank' => $payable->bank_name ?? 'N/A',
-            ];
-        } elseif ($this->given_to == 'Provider') {
-            $this->validate([
-                'supplier_id' => 'required|integer',
-            ]);
-            $this->employee_id = null;
-            $payable = Provider::find($this->supplier_id);
-            $additional_data = [
-                'name' => $payable->name,
-                'email' => $payable->email,
-                'contact' => $payable->contact,
-                'account_name' => $payable->account_name ?? 'N/A',
-                'account' => $payable->bank_account ?? 'N/A',
-                'bank' => $payable->bank_name ?? 'N/A',
-            ];
-        } elseif ($this->given_to == 'Unit') {
-            $this->employee_id = null;
-            $this->supplier_id = null;
-            $payable = FmsLedgerAccount::find($this->ledger_account);
-            $additional_data = [
-                'name' => $payable->name,
-                'email' => null,
-                'contact' => null,
-                'account_name' => 'N/A',
-                'account' => 'N/A',
-                'bank' => 'N/A',
-            ];
-        }
-        // dd($additional_data);
-        if (!$payable) {
-            $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'warning',
-                'message' => 'Oops! Something Went Wrong!',
-                'text' => 'Please select a payee!',
-            ]);
-            return false;
-        }
-        if (!$requestable) {
-            $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'warning',
-                'message' => 'Oops! Something Went Wrong!',
-                'text' => 'Please select a unit!',
-            ]);
-            return false;
-        }
-
         try {
             DB::transaction(function () {
                 $total_amount = (float) str_replace(',', '', $this->total_amount);
@@ -187,13 +130,13 @@ class FmsTransactionsComponent extends Component
                 $payable = Project::where('id', $this->project_id)->first();
                 // $cashAccount->update();
                 $trans = new FmsTransaction();
-                $trans->trx_no = $this->trx_no;
+                $trans->trx_no = 'Trx' . time();
                 $trans->trx_ref = $this->trx_ref;
                 $trans->trx_date = $this->trx_date;
                 $trans->client = $this->client;
                 $trans->total_amount = $this->total_amount;
                 $trans->amount_local = $this->amount_local;
-                $trans->deductions = $this->deductions;
+                $trans->deductions = 0;
                 $trans->rate = $this->rate;
                 $trans->project_id = $this->project_id;
                 $trans->currency_id = $this->currency_id;
@@ -201,7 +144,6 @@ class FmsTransactionsComponent extends Component
                 $trans->ledger_account = $this->ledger_account;
                 $trans->trx_type = $this->trx_type;
                 $trans->entry_type = 'OP';
-                $trans->status = $this->status;
                 $trans->description = $this->description;
                 $trans->requestable()->associate($payable);
                 $trans->save();
@@ -221,6 +163,18 @@ class FmsTransactionsComponent extends Component
         }
     }
 
+    public function mainQuery()
+    {
+        $data = FmsTransaction::with('requestable')
+            ->when($this->from_date != '' && $this->to_date != '', function ($query) {
+                $query->whereBetween('created_at', [$this->from_date, $this->to_date]);
+            }, function ($query) {
+                return $query;
+            });
+
+        return $data;
+    }
+
     public function editTransaction($id)
     {
         $trans = FmsTransaction::where('id', $id)->with('requestable')->first();
@@ -236,10 +190,14 @@ class FmsTransactionsComponent extends Component
         $this->entry_type = $trans->entry_type;
         $this->description = $trans->description;
         $this->total_amount = $trans->total_amount;
-        $this->updatedTrxEntryType();
     }
     public function render()
     {
-        return view('livewire.finance.fms-transactions-component');
+        $data['expenseTypes'] = ExpenseType::where('type', $this->trx_type)->get();
+        $data['projects'] = Project::get();
+        $data['transactions'] = $this->mainQuery()
+            ->orderBy($this->orderBy, $this->orderAsc ? 'asc' : 'desc')
+            ->paginate($this->perPage);
+        return view('livewire.finance.fms-transactions-component', $data);
     }
 }

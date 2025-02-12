@@ -31,6 +31,11 @@ class FmsTransaction extends Model
     {
         return $this->morphTo();
     }
+    public function currency()
+    {
+        return $this->belongsTo(FmsCurrencies::class, 'currency_id', 'id');
+    }
+
     public function expenseLine()
     {
         return $this->belongsTo(ExpenseType::class, 'expense_type_id', 'id');
