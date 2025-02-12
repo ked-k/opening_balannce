@@ -32,7 +32,13 @@
                 @enderror
             </div>
 
-
+            <div class="mb-3 col-md-6">
+                <label for="grant_code" class="form-label required">Grant Code</label>
+                <input id="grant_code" class="form-control" wire:model.defer="grant_code">
+                @error('grant_code')
+                    <div class="text-danger text-small">{{ $message }}</div>
+                @enderror
+            </div>
             <div class="mb-3 col-md-6">
                 <label for="project_code" class="form-label required">{{ __('Project/Study Acronym') }}</label>
                 <input type="text" id="project_code" class="form-control" wire:model="project_code">
@@ -40,13 +46,16 @@
                     <div class="text-danger text-small">{{ $message }}</div>
                 @enderror
             </div>
-            <div class="mb-3 col-md-3">
-                <label for="grant_code" class="form-label required">Grant Code</label>
-                <input id="grant_code" class="form-control" wire:model.defer="grant_code">
-                @error('grant_code')
+
+
+            <div class="mb-3 col-md-6">
+                <label for="funding_source" class="form-label">{{ __('Funding Source') }}</label>
+                <input type="text" id="funding_source" class="form-control" wire:model="funding_source">
+                @error('funding_source')
                     <div class="text-danger text-small">{{ $message }}</div>
                 @enderror
             </div>
+
             <div class="mb-3 col-md-12">
                 <label for="name" class="form-label required">{{ __('Name') }}</label>
                 <input type="text" id="name" class="form-control" wire:model="name">
@@ -57,14 +66,6 @@
 
 
 
-
-            <div class="mb-3 col-md-6">
-                <label for="funding_source" class="form-label">{{ __('Funding Source') }}</label>
-                <input type="text" id="funding_source" class="form-control" wire:model="funding_source">
-                @error('funding_source')
-                    <div class="text-danger text-small">{{ $message }}</div>
-                @enderror
-            </div>
             {{-- <div class="mb-3 col-md-3">
                 <label for="funding_amount" class="form-label">{{ __('Funding Amount') }}</label>
                 <input type="number" id="funding_amount" class="form-control" wire:model.defer="funding_amount"
@@ -124,7 +125,7 @@
                     <div class="text-danger text-small">{{ $message }}</div>
                 @enderror
             </div>
-            <div class="mb-3 col-md-6">
+            <div class="mb-3 col-md-12">
                 <label for="project_summary" class="form-label">{{ __('Project/Study/Grant Summary') }}</label>
                 <textarea id="project_summary" class="form-control" wire:model="project_summary"></textarea>
                 @error('project_summary')
