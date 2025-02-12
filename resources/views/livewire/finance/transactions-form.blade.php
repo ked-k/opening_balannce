@@ -46,7 +46,7 @@
 
             <div class="mb-3 col-3">
                 <label for="coa_id" class="form-label required">Trx Ref.</label>
-                <input type="text" name="trx_ref" id="" class="form-control" required
+                <input type="text" name="trx_ref" id="" class="form-control text-uppercase" required
                     wire:model.defer="trx_ref">
                 @error('trx_ref')
                     <div class="text-danger text-small">{{ $message }}</div>
