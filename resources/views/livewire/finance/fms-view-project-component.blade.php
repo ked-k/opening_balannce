@@ -24,7 +24,7 @@
                             <select class="form-control" name="transaction_type" id="transaction_type"
                                 wire:model='transaction_type'>
                                 <option value="0">All</option>
-                                @foreach ($transaction_types as $type)
+                                @foreach ($expenseTypes as $type)
                                     <option value="{{ $type->id }}">{{ $type->name }}</option>
                                 @endforeach
                             </select>
@@ -61,6 +61,10 @@
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab"
                                 aria-selected="false"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span
                                     class="hidden-xs-down">Merp Transactions</span></a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="modal" data-target="#addnew"
+                                href="#profile" role="tab" aria-selected="false"><span class="hidden-sm-up"><i
+                                        class="ti-user"></i></span> <span class="hidden-xs-down">New
+                                    Transaction</span></a> </li>
                     </ul>
                     </ul>
                 </div>
@@ -128,16 +132,32 @@
                                                     }
                                                 @endphp
                                                 <tr>
-                                                    <td> {{ $transaction->trx_no }}</td>
+                                                    <td> {{ $transaction->trx_no }}
+                                                        <div class="d-flex justify-content-between">
+
+                                                            <a class="text-danger m-1"
+                                                                wire:click="$set('delete_id','{{ $transaction->id }}')"
+                                                                title="{{ __('public.delete Transaction') }}">
+                                                                <i class="fa fa-trash fs-18"></i></a>
+                                                        </div>
+                                                        @if ($transaction->id == $delete_id)
+                                                            <a class="text-warning m-1"
+                                                                wire:click="deleteTransaction({{ $transaction->id }})"
+                                                                title="{{ __('public.delete transaction') }}">
+                                                                <i class="fa fa-check fs-18"></i></a>
+                                                            <a class="text-info m-1" wire:click="$set('delete_id','')">
+                                                                <i class="fa fa-close fs-18"></i></a>
+                                                        @endif
+
+                                                    </td>
                                                     <td>{{ $transaction->trx_ref }}</td>
                                                     <td> <small>{{ $transaction->trx_date }}</small></td>
                                                     <td>
                                                         <small
                                                             class="mb-0 text-muted">{{ Str::words($transaction->description, 5, '.') }}<a
-                                                                href="javascript:void(0)"
-                                                                wire:click='viewVoucher({{ $transaction->id }})'
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#viewTransactionModal">...viewmore
+                                                                href="javascript:void(0)" data-toggle="modal"
+                                                                data-target="#addnew"
+                                                                wire:click="editData({{ $transaction->id }})">...viewmore
                                                             </a></small>
                                                     </td>
                                                     <td class="text-end">
@@ -244,6 +264,19 @@
                 </div>
             </div>
         </div><!--end card-->
+        <div wire:ignore.self class="modal fade" id="addnew" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{ __('New Transaction') }}</h5>
+                        <button type="button" class="close" wire:click="close()" data-dismiss="modal"
+                            aria-hidden="true">×</button>
+                    </div>
+                    @include('livewire.finance.transactions-form')
+                </div>
+            </div>
+        </div>
         {{-- @include('livewire.finance.ledger.inc.viewTransaction') --}}
         {{-- @include('livewire.finance.ledger.inc.repostransaction') --}}
     </div><!--end col-->

@@ -33,7 +33,7 @@
             <div class="mb-3 col-3">
                 <label for="expense_type_id" class="form-label">{{ $trx_type }} Type</label>
                 <select id="expense_type_id" class="form-control" name="expense_type_id"
-                    @if ($project_id != 0) required @endif wire:model="expense_type_id">
+                    @if ($project_id != 0) required @endif wire:model.lazy="expense_type_id">
                     <option value="">Select</option>
                     @foreach ($expenseTypes as $expenseType)
                         <option value="{{ $expenseType->id }}">{{ $expenseType->name }}</option>
@@ -88,7 +88,7 @@
             <div class="mb-3 col-5">
                 <label for="trx_date" class="form-label required">Client</label>
                 <div class="input-group">
-                    <textarea type="text" id="client" class="form-control" name="client" required wire:model="client"></textarea>
+                    <textarea type="text" id="client" class="form-control" name="client" required wire:model.defer="client"></textarea>
                 </div>
                 @error('client')
                     <div class="text-danger text-small">{{ $message }}</div>
