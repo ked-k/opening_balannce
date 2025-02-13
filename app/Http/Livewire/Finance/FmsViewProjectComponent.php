@@ -22,14 +22,15 @@ class FmsViewProjectComponent extends Component
         $this->project_id = $id;
         $this->ledger_account = Project::where('id', $this->project_id)->first();
         $response = Http::get('https://merp-v2.makbrc.org/unit/ledger/' . $this->ledger_account?->merp_id);
+        // $response = Http::get('http://merp.makbrc.online/unit/ledger/' . $this->ledger_account?->merp_id);
         if ($response->successful()) {
             $data = $response->json(); // Decode the JSON response to an array
+            dd($data);
+            $this->merpBalance = $data['balance'];
         } else {
             // Handle errors, if the request fails
-            $data = 0;
+            $this->merpBalance = 0;
         }
-        // dd($this->ledger_account?->merp_id);
-        $this->merpBalance = $data;
     }
     public function render()
     {
