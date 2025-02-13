@@ -64,7 +64,7 @@
                                                             wire:click="$set('delete_id','{{ $project->id }}')"
                                                             title="{{ __('public.delete project') }}">
                                                             <i class="fa fa-trash fs-18"></i></button>
-                                                        <a class="btn btn-sm btn-outline-success m-1"
+                                                        <a class="btn btn-sm btn-outline-success m-1" target="_blank"
                                                             href="{{ route('project_transactions', $project->id) }}"
                                                             title="{{ __('public.view project') }}">
                                                             <i class="fa fa-eye fs-18"></i></a>
