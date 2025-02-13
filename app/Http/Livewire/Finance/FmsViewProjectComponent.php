@@ -278,7 +278,7 @@ class FmsViewProjectComponent extends Component
     {
         $data['projects'] = Project::get();
 
-        $data['expenseTypes'] = ExpenseType::get();
+        $data['expenseTypes'] = ExpenseType::where('type', $this->trx_type)->get();
         $data['transactions'] = FmsTransaction::where('project_id', $this->project_id)->orderBy('trx_date', 'asc')->get();
         if ($this->from_date && $this->to_date) {
             // Calculate the previous balance (balance before the filtered date range)
