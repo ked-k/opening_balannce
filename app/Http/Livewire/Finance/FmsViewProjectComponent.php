@@ -25,7 +25,7 @@ class FmsViewProjectComponent extends Component
         // $response = Http::get('http://merp.makbrc.online/unit/ledger/' . $this->ledger_account?->merp_id);
         if ($response->successful()) {
             $data = $response->json(); // Decode the JSON response to an array
-            dd($data);
+            // dd($data);
             $this->merpBalance = $data['balance'];
         } else {
             // Handle errors, if the request fails
