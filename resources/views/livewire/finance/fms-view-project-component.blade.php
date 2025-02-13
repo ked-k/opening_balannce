@@ -72,8 +72,8 @@
                                     $ledgerBalance = $income - $expense;
                                 @endphp
                                 <td class="border-0 font-14 text-dark text-end">@money_format($ledgerBalance)</td>
-                                <td class="border-0 font-14 text-dark text-end">@money_format(0)</td>
-                                <td class="border-0 font-14 text-dark text-end">@money_format($ledgerBalance + 0)</td>
+                                <td class="border-0 font-14 text-dark text-end">@money_format($merpBalance)</td>
+                                <td class="border-0 font-14 text-dark text-end">@money_format($ledgerBalance + $merpBalance)</td>
                             </tr>
                         </tbody>
                     </table>
@@ -165,7 +165,7 @@
                     <hr>
                     <div class="row d-flex justify-content-center">
                         <div class="col-lg-12 col-xl-4 ms-auto align-self-center">
-                            <div class="text-center"><small class="font-12">This Document was electronocally
+                            <div class="text-center"><small class="font-12">This Document was electronically
                                     generated.</small></div>
                         </div><!--end col-->
                         <div class="col-lg-12 col-xl-4">
