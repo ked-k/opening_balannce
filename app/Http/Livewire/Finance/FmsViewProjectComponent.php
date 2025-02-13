@@ -21,7 +21,7 @@ class FmsViewProjectComponent extends Component
     {
         $this->project_id = $id;
         $this->ledger_account = Project::where('id', $this->project_id)->first();
-        $response = Http::get('https://merp-v2.makbrc.org/api/ledger/' . $this->ledger_account?->merp_id);
+        $response = Http::get('https://merp-v2.makbrc.org/unit/ledger/' . $this->ledger_account?->merp_id);
         if ($response->successful()) {
             $data = $response->json(); // Decode the JSON response to an array
         } else {
