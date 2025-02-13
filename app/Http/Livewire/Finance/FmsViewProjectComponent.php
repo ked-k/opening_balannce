@@ -6,6 +6,7 @@ use App\Models\Finance\ExpenseType;
 use App\Models\Finance\FmsTransaction;
 use App\Models\Finance\Project;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class FmsViewProjectComponent extends Component
@@ -17,20 +18,41 @@ class FmsViewProjectComponent extends Component
     public $ledger_account;
     public $trx_type;
     public $merpBalance = 0;
+    public array $merpTransactions = [];
     public function mount($id)
     {
         $this->project_id = $id;
         $this->ledger_account = Project::where('id', $this->project_id)->first();
-        $response = Http::get('https://merp-v2.makbrc.org/unit/ledger/' . $this->ledger_account?->merp_id);
-        // $response = Http::get('http://merp.makbrc.online/unit/ledger/' . $this->ledger_account?->merp_id);
+        $merpId = $this->ledger_account?->merp_id;
+        $response = Http::get('https://merp-v2.makbrc.org/unit/ledger/' . $merpId);
+        // $trxResponse = Http::get('http://merp.makbrc.online/unit/ledger/transactions/' . $this->ledger_account?->merp_id);
+        try {
+            $trxResponse = Http::get("https://merp-v2.makbrc.org/unit/ledger/transactions/{$merpId}");
+
+            if ($trxResponse->successful()) {
+                $data = $trxResponse->json();
+                $transactions = $data['transactions'] ?? [];
+                // Sort transactions by trx_date (chronological order)
+                usort($transactions, function ($a, $b) {
+                    return strtotime($a['trx_date']) <=> strtotime($b['trx_date']);
+                });
+                $this->merpTransactions = $transactions ?? [];
+            } else {
+                $this->merpTransactions = [];
+                throw new \Exception('Failed to fetch transactions.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Transaction Fetch Error: ' . $e->getMessage());
+            // return back()->with('error', 'Error fetching transactions. ' . $e->getMessage());
+        }
         if ($response->successful()) {
             $data = $response->json(); // Decode the JSON response to an array
-            // dd($data);
             $this->merpBalance = $data['balance'];
         } else {
             // Handle errors, if the request fails
             $this->merpBalance = 0;
         }
+        // dd($this->merpTransactions);
     }
     public function render()
     {
