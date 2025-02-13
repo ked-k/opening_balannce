@@ -249,9 +249,21 @@
                                                     <td>{{ $trx['trx_no'] }}</td>
                                                     <td>{{ $trx['trx_ref'] }}</td>
                                                     <td> <small>{{ $trx['description'] }}</small></td>
-                                                    <td>{{ $trx['client'] }}</td>
-                                                    <td>{{ $debit > 0 ? number_format($debit, 2) : '' }}</td>
-                                                    <td>{{ $credit > 0 ? number_format($credit, 2) : '' }}</td>
+                                                    <td><small>{{ $trx['client'] }}</small></td>
+                                                    <td>
+                                                        @if ($trx['trx_type'] == 'Income')
+                                                            {{ $debit > 0 ? number_format($debit, 2) : '' }}
+                                                            <small class="text-info">@money_format($trx['total_amount'] ?? 0) <span
+                                                                    class="text-warning">({{ $trx['rate'] ?? 0 }})</span></small>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if ($trx['trx_type'] == 'Expense')
+                                                            {{ $credit > 0 ? number_format($credit, 2) : '' }}
+                                                            <small class="text-info">@money_format($trx['total_amount'] ?? 0) <span
+                                                                    class="text-warning">({{ $trx['rate'] ?? 0 }})</span></small>
+                                                        @endif
+                                                    </td>
                                                     <td>{{ number_format($runningBalance, 2) }}</td>
                                                 </tr>
                                             @endforeach
