@@ -65,6 +65,10 @@
                                 href="#profile" role="tab" aria-selected="false"><span class="hidden-sm-up"><i
                                         class="ti-user"></i></span> <span class="hidden-xs-down">New
                                     Transaction</span></a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="modal" data-target="#importModal"
+                                href="#profile" role="tab" aria-selected="false"><span class="hidden-sm-up"><i
+                                        class="ti-user"></i></span> <span class="hidden-xs-down">Import
+                                    Transaction</span></a> </li>
                     </ul>
                     </ul>
                 </div>
@@ -145,7 +149,8 @@
                                                                 wire:click="deleteTransaction({{ $transaction->id }})"
                                                                 title="{{ __('public.delete transaction') }}">
                                                                 <i class="fa fa-check fs-18"></i></a>
-                                                            <a class="text-info m-1" wire:click="$set('delete_id','')">
+                                                            <a class="text-info m-1"
+                                                                wire:click="$set('delete_id','')">
                                                                 <i class="fa fa-close fs-18"></i></a>
                                                         @endif
 
@@ -286,6 +291,39 @@
                             aria-hidden="true">×</button>
                     </div>
                     @include('livewire.finance.transactions-form')
+                </div>
+            </div>
+        </div>
+        <div wire:ignore.self class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Choose a file</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <form wire:submit.prevent="importData">
+                        <div class="modal-body">
+                            @include('layouts.messages')
+                            <div class="mb-3">
+                                <label for="entry_type" class="form-label required">Item File</label>
+                                <input type="file" wire:model.lazy="import_file" class="form-control" required
+                                    name="import_file" id="import_file_{{ $iteration }}">
+                                <div class="text-success text-small" wire:loading wire:target="import_file">Uploading
+                                    file...</div>
+                                @error('import_file')
+                                    <div class="text-danger text-small">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger"
+                                data-bs-dismiss="modal">{{ __('public.close') }}</button>
+                            <button type="submit" class="btn btn-success">{{ __('public.upload') }}</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

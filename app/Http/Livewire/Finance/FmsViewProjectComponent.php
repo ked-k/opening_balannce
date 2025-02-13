@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Finance;
 
+use App\Imports\TransactionsImport;
 use App\Models\Finance\ExpenseType;
 use App\Models\Finance\FmsCurrencies;
 use App\Models\Finance\FmsTransaction;
@@ -10,9 +11,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FmsViewProjectComponent extends Component
 {
+    use WithFileUploads;
     public $exportIds;
 
     public $from_date;
@@ -87,6 +91,46 @@ class FmsViewProjectComponent extends Component
             $this->merpBalance = 0;
         }
         // dd($this->merpTransactions);
+    }
+    public $iteration;
+    public $import_file;
+    public function importData()
+    {
+        $this->validate([
+            'import_file' => 'required|mimes:xlsx|max:10240|file|min:0.01',
+            // 'unit_id' => 'required',
+        ]);
+        $data = Excel::toArray(new TransactionsImport(), $this->import_file);
+        // dd($data);
+        // Check if the number of imported records exceeds the maximum allowed
+
+        try {
+            session(['import_batch' => time() . rand(50, 1000)]);
+            session(['unit_id' => $this->project_id]);
+            DB::statement('SET foreign_key_checks=1');
+            Excel::import(new TransactionsImport, $this->import_file);
+            DB::statement('SET foreign_key_checks=1');
+            session()->forget(['unit_id', 'import_batch']);
+            $this->dispatchBrowserEvent('close-modal');
+            $this->iteration = rand();
+            $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Item Data imported successfully!']);
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            foreach ($failures as $failure) {
+                $failure->row(); // row that went wrong
+                $failure->attribute(); // either heading key (if using heading row concern) or column index
+                $failure->errors(); // Actual error messages from Laravel validator
+                $failure->values(); // The values of the row that has failed.
+            }
+            foreach ($failure->errors() as $err) {
+            }
+            $this->dispatchBrowserEvent('close-modal');
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'error',
+                'message' => 'Something went wrong!',
+                'text' => 'Failed to import samples.' . $err,
+            ]);
+        }
     }
     public function close()
     {

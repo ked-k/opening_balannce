@@ -2,12 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\HelpDesk\Ticket;
-use App\Models\NetworkManagement\Institution;
-use App\Models\SampleManagement\ReferralRequest;
-use App\Models\SampleManagement\SampleShipment;
-use Illuminate\Support\Str;
-
 class GeneratorService
 {
     public static function password($length = 2)
@@ -27,29 +21,20 @@ class GeneratorService
             $randomLowercase .= $lowercase[rand(0, strlen($lowercase) - 1)];
         }
 
-        return str_shuffle($randomNumber.$randomSymbol.$randomUppercase.$randomLowercase);
+        return str_shuffle($randomNumber . $randomSymbol . $randomUppercase . $randomLowercase);
     }
 
     //Generate standard ticket reference
-    public static function ticketReference()
+    public static function getNumber($length)
     {
-        $reference = '';
-        $yearStart = date('y');
-        $latestReference = Ticket::select('reference_number')->orderBy('id', 'desc')->first();
-
-        if ($latestReference) {
-            $referenceNumberSplit = explode('-', $latestReference->reference_number);
-            $referenceYear = (int) filter_var($referenceNumberSplit[0], FILTER_SANITIZE_NUMBER_INT);
-
-            if ($referenceYear == $yearStart) {
-                $reference = $referenceNumberSplit[0].'-'.str_pad(((int) filter_var($referenceNumberSplit[1], FILTER_SANITIZE_NUMBER_INT) + 1), 3, '0', STR_PAD_LEFT).'TR';
-            } else {
-                $reference = '#NIMS'.$yearStart.'-001TR';
-            }
-        } else {
-            $reference = '#NIMS'.$yearStart.'-001TR';
+        $characters = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
 
-        return $reference;
+        return str_shuffle($randomString);
+        return $randomString;
     }
 }
