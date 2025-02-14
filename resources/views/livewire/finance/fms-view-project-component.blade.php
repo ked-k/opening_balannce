@@ -300,8 +300,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Choose a file</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">x</button>
                     </div>
                     <form wire:submit.prevent="importData">
                         <div class="modal-body">
@@ -320,8 +319,8 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger"
-                                data-bs-dismiss="modal">{{ __('public.close') }}</button>
-                            <button type="submit" class="btn btn-success">{{ __('public.upload') }}</button>
+                                data-dismiss="modal">{{ __('close') }}</button>
+                            <button type="submit" class="btn btn-success">{{ __('upload') }}</button>
                         </div>
                     </form>
                 </div>
