@@ -49,7 +49,7 @@ class FmsViewProjectComponent extends Component
     public $project_id;
     public $currency_id;
     public $expense_type_id;
-    // public $trx_type = 'Expense';
+    public $trx_type;
     public $entry_type;
     public $status;
     public $description;
