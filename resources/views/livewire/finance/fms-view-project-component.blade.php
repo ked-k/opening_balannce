@@ -266,12 +266,12 @@
                                                     <td>{{ $trx['trx_date'] }}
                                                         @if (!$transaction->verified)
                                                             <a class="text-success m-1"
-                                                                wire:click="markAsVerified({{ $trx['id'] }},1)"
+                                                                wire:click="markMerpAsVerified({{ $trx['id'] }},1)"
                                                                 title="{{ __('Verify Transaction') }}">
                                                                 <i class="fa fa-handshake-o fs-18"></i></a>
                                                         @else
                                                             <a class="text-info m-1"
-                                                                wire:click="markAsVerified({{ $trx['id'] }},0)"
+                                                                wire:click="markMerpAsVerified({{ $trx['id'] }},0)"
                                                                 title="{{ __('Un verify Transaction') }}">
                                                                 <i class="fa fa-ban fs-18"></i></a>
                                                         @endif

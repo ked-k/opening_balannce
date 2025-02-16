@@ -169,11 +169,14 @@ class FmsViewProjectComponent extends Component
     }
     public function markMerpAsVerified($id, $state)
     {
-        // $trxResponse = Http::get('http://merp.makbrc.online/unit/ledger/transaction/' . $id);
-        $trxResponse = Http::get("http://merp.makbrc.online/unit/ledger/transaction/{$id}/{$state}");
-        dd($trxResponse);
-        $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Transaction verified successfully!']);
-
+        try {
+            $trxResponse = Http::get("https://merp-v2.makbrc.org/unit/ledger/transaction/{$id}/{$state}");
+            // dd($trxResponse->body());
+            $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => $trxResponse->body()]);
+        } catch (\Exception $e) {
+            // Log::error('Transaction Fetch Error: ' . $e->getMessage());
+            return back()->with('error', 'Error fetching transactions. ' . $e->getMessage());
+        }
     }
     public function deleteTransaction($id)
     {
