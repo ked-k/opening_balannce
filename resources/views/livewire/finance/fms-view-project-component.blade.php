@@ -1,4 +1,6 @@
 <div>
+    @include('livewire.layouts.partials.inc.create-resource')
+
     <div class="row">
         <div class="col-lg-11 mx-auto">
             <div class="card">
@@ -138,7 +140,10 @@
                                                 <tr>
                                                     <td> {{ $transaction->trx_no }}
                                                         <div class="d-flex justify-content-between">
-
+                                                            <a class="text-success m-1"
+                                                                wire:click="$markAsVerified({{ $transaction->id }})"
+                                                                title="{{ __('public.delete Transaction') }}">
+                                                                <i class="fa fa-handshake-o fs-18"></i></a>
                                                             <a class="text-danger m-1"
                                                                 wire:click="$set('delete_id','{{ $transaction->id }}')"
                                                                 title="{{ __('public.delete Transaction') }}">

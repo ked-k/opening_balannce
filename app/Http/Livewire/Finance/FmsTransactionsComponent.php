@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Finance;
 
+use App\Exports\FmsTrxExport;
 use App\Models\Finance\ExpenseType;
 use App\Models\Finance\FmsCurrencies;
 use App\Models\Finance\FmsTransaction;
@@ -52,6 +53,19 @@ class FmsTransactionsComponent extends Component
     public $status;
     public $description;
     public $delete_id;
+
+    public function export()
+    {
+        if (count($this->exportIds) > 0) {
+            return (new FmsTrxExport($this->exportIds))->download('transactions_' . date('d-m-Y') . '_' . now()->toTimeString() . '.xlsx');
+        } else {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'warning',
+                'message' => 'Oops! Something Went Wrong!',
+                'text' => 'No services selected for export!',
+            ]);
+        }
+    }
     public function mount($type)
     {
         if ($type == 'all') {
@@ -241,7 +255,7 @@ class FmsTransactionsComponent extends Component
             ->when($this->trx_type != '', function ($query) {
                 $query->where('trx_type', $this->trx_type);
             });
-
+        $this->exportIds = $data->pluck('id')->toArray();
         return $data;
     }
 

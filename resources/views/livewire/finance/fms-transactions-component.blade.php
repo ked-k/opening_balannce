@@ -44,10 +44,10 @@
                                             <td>@money_format($transaction->total_amount * $transaction->rate)</td>
                                             <td class="table-action">
                                                 <div class="d-flex justify-content-between">
-                                                    <a href="{{ URL('finance-main_transaction_view', $transaction->id) }}"
+                                                    {{-- <a href="{{ URL('finance-main_transaction_view', $transaction->id) }}"
                                                         class="btn btn-sm btn-outline-secondary m-1">
                                                         <i class="fa fa-eye"></i>
-                                                    </a>
+                                                    </a> --}}
                                                     <button class="btn btn-sm btn-outline-success m-1"
                                                         data-toggle="modal" data-target="#addnew"
                                                         wire:click="editData({{ $transaction->id }})"

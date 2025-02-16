@@ -4,9 +4,11 @@ namespace App\Models\Finance;
 
 use App\Models\Finance\ExpenseType;
 use App\Models\Finance\Project;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -34,6 +36,21 @@ class FmsTransaction extends Model
     public function currency()
     {
         return $this->belongsTo(FmsCurrencies::class, 'currency_id', 'id');
+    }
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+    public static function boot()
+    {
+        parent::boot();
+
+        if (Auth::check()) {
+            self::creating(function ($model) {
+                // Set created_by attribute
+                $model->created_by = auth()->id();
+            });
+        }
     }
 
     public function expenseLine()
@@ -82,5 +99,6 @@ class FmsTransaction extends Model
         'created_by',
         'updated_by',
         'requestable',
+        'verified',
     ];
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Finance;
 
+use App\Exports\FmsTrxExport;
 use App\Imports\TransactionsImport;
 use App\Models\Finance\ExpenseType;
 use App\Models\Finance\FmsCurrencies;
@@ -57,6 +58,18 @@ class FmsViewProjectComponent extends Component
     public $ledger_account;
     public $merpBalance = 0;
     public array $merpTransactions = [];
+    public function export()
+    {
+        if (count($this->exportIds) > 0) {
+            return (new FmsTrxExport($this->exportIds))->download('transactions_' . date('d-m-Y') . '_' . now()->toTimeString() . '.xlsx');
+        } else {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'warning',
+                'message' => 'Oops! Something Went Wrong!',
+                'text' => 'No services selected for export!',
+            ]);
+        }
+    }
     public function mount($id)
     {
         $this->project_id = $id;
@@ -145,6 +158,14 @@ class FmsViewProjectComponent extends Component
             $this->updatedTotalAmount();
 
         }
+    }
+    public function markAsVerified($id)
+    {
+        FmsTransaction::where('id', $id)->update([
+            'verified' => true,
+        ]);
+        $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Transaction verified successfully!']);
+
     }
     public function deleteTransaction($id)
     {
@@ -318,12 +339,24 @@ class FmsViewProjectComponent extends Component
         $this->total_amount = $trans->total_amount;
         $this->editMode = true;
     }
+    public function mainQuery()
+    {
+        $data = FmsTransaction::with('requestable')->where('project_id', $this->project_id)
+            ->when($this->from_date != '' && $this->to_date != '', function ($query) {
+                $query->whereBetween('created_at', [$this->from_date, $this->to_date]);
+            })
+            ->when($this->trx_type != '', function ($query) {
+                $query->where('trx_type', $this->trx_type);
+            });
+        $this->exportIds = $data->pluck('id')->toArray();
+        return $data;
+    }
     public function render()
     {
         $data['projects'] = Project::get();
 
         $data['expenseTypes'] = ExpenseType::where('type', $this->trx_type)->get();
-        $data['transactions'] = FmsTransaction::where('project_id', $this->project_id)->orderBy('trx_date', 'asc')->get();
+        $exdata = $data['transactions'] = $this->mainQuery()->orderBy('trx_date', 'asc')->get();
         if ($this->from_date && $this->to_date) {
             // Calculate the previous balance (balance before the filtered date range)
             $this->previous_balance = FmsTransaction::where('bank_id', $this->ledger_id)
