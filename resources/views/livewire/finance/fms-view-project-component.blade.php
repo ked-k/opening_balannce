@@ -140,19 +140,27 @@
                                                 <tr>
                                                     <td> {{ $transaction->trx_no }}
                                                         <div class="d-flex justify-content-between">
-                                                            <a class="text-success m-1"
-                                                                wire:click="$markAsVerified({{ $transaction->id }})"
-                                                                title="{{ __('public.delete Transaction') }}">
-                                                                <i class="fa fa-handshake-o fs-18"></i></a>
-                                                            <a class="text-danger m-1"
-                                                                wire:click="$set('delete_id','{{ $transaction->id }}')"
-                                                                title="{{ __('public.delete Transaction') }}">
-                                                                <i class="fa fa-trash fs-18"></i></a>
+
+                                                            @if (!$transaction->verified)
+                                                                <a class="text-danger m-1"
+                                                                    wire:click="$set('delete_id','{{ $transaction->id }}')"
+                                                                    title="{{ __('delete Transaction') }}">
+                                                                    <i class="fa fa-trash fs-18"></i></a>
+                                                                <a class="text-success m-1"
+                                                                    wire:click="markAsVerified({{ $transaction->id }},1)"
+                                                                    title="{{ __('Verify Transaction') }}">
+                                                                    <i class="fa fa-handshake-o fs-18"></i></a>
+                                                            @else
+                                                                <a class="text-info m-1"
+                                                                    wire:click="markAsVerified({{ $transaction->id }},0)"
+                                                                    title="{{ __('Un verify Transaction') }}">
+                                                                    <i class="fa fa-ban fs-18"></i></a>
+                                                            @endif
                                                         </div>
                                                         @if ($transaction->id == $delete_id)
                                                             <a class="text-warning m-1"
                                                                 wire:click="deleteTransaction({{ $transaction->id }})"
-                                                                title="{{ __('public.delete transaction') }}">
+                                                                title="{{ __('confirm delete transaction') }}">
                                                                 <i class="fa fa-check fs-18"></i></a>
                                                             <a class="text-info m-1"
                                                                 wire:click="$set('delete_id','')">

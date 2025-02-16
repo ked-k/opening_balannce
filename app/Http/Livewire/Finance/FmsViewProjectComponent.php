@@ -159,10 +159,10 @@ class FmsViewProjectComponent extends Component
 
         }
     }
-    public function markAsVerified($id)
+    public function markAsVerified($id, $state)
     {
         FmsTransaction::where('id', $id)->update([
-            'verified' => true,
+            'verified' => $state,
         ]);
         $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Transaction verified successfully!']);
 
