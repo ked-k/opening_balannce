@@ -167,6 +167,14 @@ class FmsViewProjectComponent extends Component
         $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Transaction verified successfully!']);
 
     }
+    public function markMerpAsVerified($id, $state)
+    {
+        // $trxResponse = Http::get('http://merp.makbrc.online/unit/ledger/transaction/' . $id);
+        $trxResponse = Http::get("http://merp.makbrc.online/unit/ledger/transaction/{$id}/{$state}");
+        dd($trxResponse);
+        $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => 'Transaction verified successfully!']);
+
+    }
     public function deleteTransaction($id)
     {
         FmsTransaction::where('id', $id)->delete();

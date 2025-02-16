@@ -263,7 +263,19 @@
                                                 @endphp
 
                                                 <tr>
-                                                    <td>{{ $trx['trx_date'] }}</td>
+                                                    <td>{{ $trx['trx_date'] }}
+                                                        @if (!$transaction->verified)
+                                                            <a class="text-success m-1"
+                                                                wire:click="markAsVerified({{ $trx['id'] }},1)"
+                                                                title="{{ __('Verify Transaction') }}">
+                                                                <i class="fa fa-handshake-o fs-18"></i></a>
+                                                        @else
+                                                            <a class="text-info m-1"
+                                                                wire:click="markAsVerified({{ $trx['id'] }},0)"
+                                                                title="{{ __('Un verify Transaction') }}">
+                                                                <i class="fa fa-ban fs-18"></i></a>
+                                                        @endif
+                                                    </td>
                                                     <td>{{ $trx['trx_no'] }}</td>
                                                     <td>{{ $trx['trx_ref'] }}</td>
                                                     <td> <small>{{ $trx['description'] }}</small></td>
