@@ -2,19 +2,6 @@
     @include('livewire.layouts.partials.inc.create-resource')
 
     <div class="row">
-        <style>
-            .card-header {
-                position: sticky;
-                top: 0;
-                /* Sticks to the top */
-                background-color: #fff;
-                /* Ensure header has a background */
-                z-index: 10;
-                /* Ensures it stays above the content */
-                padding: 1rem;
-                border-bottom: 1px solid #ddd;
-            }
-        </style>
         <div class="col-lg-11 mx-auto">
             <div class="card">
                 <div class="card-body invoice-head">
@@ -548,5 +535,3 @@
     {{-- @include('livewire.finance.ledger.inc.viewTransaction') --}}
     {{-- @include('livewire.finance.ledger.inc.repostransaction') --}}
 </div><!--end col-->
-</div><!--end row-->
-</div>
