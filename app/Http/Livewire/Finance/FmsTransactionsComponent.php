@@ -53,6 +53,7 @@ class FmsTransactionsComponent extends Component
     public $status;
     public $description;
     public $delete_id;
+    // public $search;
 
     public function export()
     {
@@ -248,7 +249,7 @@ class FmsTransactionsComponent extends Component
 
     public function mainQuery()
     {
-        $data = FmsTransaction::with('requestable')
+        $data = FmsTransaction::search($this->search)->with('requestable')
             ->when($this->from_date != '' && $this->to_date != '', function ($query) {
                 $query->whereBetween('created_at', [$this->from_date, $this->to_date]);
             })

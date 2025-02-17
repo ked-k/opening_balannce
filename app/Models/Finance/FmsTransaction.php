@@ -62,7 +62,7 @@ class FmsTransaction extends Model
     {
         return $this->belongsTo(Project::class, 'project_id', 'id');
     }
-    public static function search($search, $type)
+    public static function search($search)
     {
         return empty($search) ? static::query()
         : static::query()
