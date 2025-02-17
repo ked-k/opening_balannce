@@ -141,7 +141,7 @@
                             <div class="alert alert-warning">No transactions found.</div>
                         @else
                             <div class="table-responsive project-invoice">
-                                <table class="table table-bordered mb-0 table-sm" style="font-size: 13.4px">
+                                <table class="table table-bordered mb-0 table-sm" style="font-size: 14px">
                                     <thead class="thead-light">
                                         <tr>
                                             <th>Date</th>
@@ -202,8 +202,9 @@
                                                                 <i class="fa fa-close fs-18"></i></a>
                                                         @endif
                                                     @elseif ($mtrx['entry_type'] == 'MERP')
+                                                        <small class="text-success">MERP</small>
                                                         @if (!$mtrx['verified'])
-                                                            <a class="text-success m-1" href="javascript:void(0)"
+                                                            <a class="text-warning m-1" href="javascript:void(0)"
                                                                 wire:click="markMerpAsVerified({{ $mtrx['id'] }},1)"
                                                                 title="{{ __('Verify Transaction') }}">
                                                                 <i class="fa fa-handshake-o fs-18"></i></a>
