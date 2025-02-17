@@ -82,18 +82,18 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="border-0 font-14 text-dark text-end float-right">@money_format($income)
+                                        <td class="border-0 font-14 text-dark text-end float-rigmht">@money_format($income)
                                         </td>
-                                        <td class="border-0 font-14 text-dark text-end float-right">@money_format($expense)
+                                        <td class="border-0 font-14 text-dark text-end float-righnt">@money_format($expense)
                                         </td>
                                         @php
                                             $ledgerBalance = $income - $expense;
                                         @endphp
-                                        <td class="border-0 font-14 text-dark text-end float-right">@money_format($ledgerBalance)
+                                        <td class="border-0 font-14 text-dark text-end ">@money_format($ledgerBalance)
                                         </td>
-                                        <td class="border-0 font-14 text-dark text-end float-right">@money_format($merpBalance)
+                                        <td class="border-0 font-14 text-dark text-end ">@money_format($merpBalance)
                                         </td>
-                                        <td class="border-0 font-14 text-dark text-end float-right">@money_format($ledgerBalance + $merpBalance)
+                                        <td class="border-0 font-14 text-dark text-end float-rightb">@money_format($ledgerBalance + $merpBalance)
                                         </td>
                                     </tr>
                                 </tbody>
@@ -288,6 +288,8 @@
                                     <tbody>
                                         @php
                                             $runningBalance = 0;
+                                            $incomes = 0;
+                                            $expenses = 0;
                                         @endphp
 
                                         @foreach ($merpTransactions as $trx)
@@ -298,8 +300,8 @@
 
                                                 // Update running balance
                                                 $runningBalance = $runningBalance + $debit - $credit;
-                                                $income = $debit + $income;
-                                                $expense = $credit + $expense;
+                                                $incomes = $debit + $incomes;
+                                                $expenses = $credit + $expenses;
                                             @endphp
 
                                             <tr>
@@ -339,9 +341,9 @@
                                         @endforeach
                                         <tr>
                                             <td class="" colspan="5">Total</td>
-                                            <td>{{ number_format($income, 2) }}</td>
-                                            <td>{{ number_format($expense, 2) }}</td>
-                                            <td>{{ number_format($income - $expense, 2) }}</td>
+                                            <td>{{ number_format($incomes, 2) }}</td>
+                                            <td>{{ number_format($expenses, 2) }}</td>
+                                            <td>{{ number_format($incomes - $expenses, 2) }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
