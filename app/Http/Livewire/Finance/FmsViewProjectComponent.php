@@ -362,10 +362,24 @@ class FmsViewProjectComponent extends Component
         $this->exportIds = $data->pluck('id')->toArray();
         return $data;
     }
+
+    public function localTrx()
+    {
+        // Merge the two data sets using collections
+        $localTransactions = $this->mainQuery()->select([
+            'id', 'trx_date', 'trx_no', 'trx_ref', 'client', 'amount_local', 'total_amount', 'trx_type', 'description', 'entry_type', 'verified',
+        ])->get()->toArray();
+        return $mergedTransactions = collect($this->merpTransactions)->merge($localTransactions)
+            ->sortBy(function ($trx) {
+                return strtotime($trx['trx_date']);
+            })
+            ->values(); // Re-index the collection
+    }
+
     public function render()
     {
         $data['projects'] = Project::get();
-
+        $data['combinedTransactions'] = $this->localTrx();
         $data['expenseTypes'] = ExpenseType::where('type', $this->trx_type)->get();
         $exdata = $data['transactions'] = $this->mainQuery()->orderBy('trx_date', 'asc')->get();
         if ($this->from_date && $this->to_date) {

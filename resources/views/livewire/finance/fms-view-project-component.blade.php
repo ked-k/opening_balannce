@@ -109,38 +109,150 @@
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab"
                                 aria-selected="true"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span
-                                    class="hidden-xs-down">Home</span></a> </li>
+                                    class="hidden-xs-down">Combined</span></a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#opTrx" role="tab"
+                                aria-selected="true"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span
+                                    class="hidden-xs-down">OB Trx</span></a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab"
                                 aria-selected="false"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span
                                     class="hidden-xs-down">Merp Transactions</span></a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="modal" data-target="#addnew"
                                 href="#profile" role="tab" aria-selected="false"><span class="hidden-sm-up"><i
                                         class="ti-user"></i></span> <span class="hidden-xs-down">New
-                                    Transaction</span></a> </li>
+                                    Trx</span></a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="modal" data-target="#importModal"
                                 href="#profilec" role="tab" aria-selected="false"><span class="hidden-sm-up"><i
                                         class="ti-user"></i></span> <span class="hidden-xs-down">Import
-                                    Transaction</span></a> </li>
+                                    Trx</span></a> </li>
                         <li class="nav-item"> <a class="nav-link" href="#profilec" role="tab"
                                 aria-selected="false"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span
                                     class="hidden-xs-down">
-                                    Start Date</span> {{ $ledger_account->project_start_date ?? 'N/A' }}</a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profilec" role="tab"
-                                aria-selected="false"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span
-                                    class="hidden-xs-down">
-                                    End Date</span>{{ $ledger_account->project_end_date ?? 'N/A' }}</a> </li>
-                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#mou" role="tab"
-                                aria-selected="false"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span
-                                    class="hidden-xs-down">MOUs</span></a> </li>
+                                    Start Date</span> {{ $ledger_account->project_start_date ?? 'N/A' }} to
+                                {{ $ledger_account->project_end_date ?? 'N/A' }}</a> </li>
+
+
                     </ul>
                 </div>
                 <div class="tab-content tabcontent-border">
                     <div class="card-body tab-pane active" id="home" role="tabpanel">
+                        <h2 class="mb-4">Combined Transactions</h2>
+
+                        @if (empty($combinedTransactions))
+                            <div class="alert alert-warning">No transactions found.</div>
+                        @else
+                            <div class="table-responsive project-invoice">
+                                <table class="table table-bordered mb-0 table-sm" style="font-size: 13.4px">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>TRX No</th>
+                                            <th>Reference</th>
+                                            <th>Description</th>
+                                            <th>Client</th>
+                                            <th>Income</th>
+                                            <th>Expense</th>
+                                            <th>Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $mrunningBalance = 0;
+                                            $mincomes = 0;
+                                            $mexpenses = 0;
+                                        @endphp
+
+                                        @foreach ($combinedTransactions as $mtrx)
+                                            @php
+                                                // Determine debit and credit amounts
+                                                $mdebit = $mtrx['trx_type'] == 'Income' ? $mtrx['amount_local'] : 0;
+                                                $mcredit = $mtrx['trx_type'] == 'Expense' ? $mtrx['amount_local'] : 0;
+
+                                                // Update running balance
+                                                $mrunningBalance = $mrunningBalance + $mdebit - $mcredit;
+                                                $mincomes = $mdebit + $mincomes;
+                                                $mexpenses = $mcredit + $mexpenses;
+                                            @endphp
+
+                                            <tr>
+                                                <td>{{ $mtrx['trx_date'] }}
+                                                    @if ($mtrx['entry_type'] == 'OP')
+                                                        @if (!$mtrx['verified'])
+                                                            <a class="text-danger m-1" href="javascript:void(0)"
+                                                                wire:click="$set('delete_id','{{ $mtrx['id'] }}')"
+                                                                title="{{ __('delete Transaction') }}">
+                                                                <i class="fa fa-trash fs-18"></i></a>
+                                                            <a class="text-success m-1" href="javascript:void(0)"
+                                                                wire:click="markAsVerified({{ $mtrx['id'] }},1)"
+                                                                title="{{ __('Verify Transaction') }}">
+                                                                <i class="fa fa-handshake-o fs-18"></i></a>
+                                                        @else
+                                                            <a class="text-info m-1" href="javascript:void(0)"
+                                                                wire:click="markAsVerified({{ $mtrx['id'] }},0)"
+                                                                title="{{ __('Un verify Transaction') }}">
+                                                                <i class="fa fa-ban fs-18"></i></a>
+                                                        @endif
+
+                                                        @if ($mtrx['id'] == $delete_id)
+                                                            <a class="text-warning m-1" href="javascript:void(0)"
+                                                                wire:click="deleteTransaction({{ $mtrx['id'] }})"
+                                                                title="{{ __('confirm delete transaction') }}">
+                                                                <i class="fa fa-check fs-18"></i></a>
+                                                            <a class="text-info m-1"
+                                                                wire:click="$set('delete_id','')">
+                                                                <i class="fa fa-close fs-18"></i></a>
+                                                        @endif
+                                                    @elseif ($mtrx['entry_type'] == 'MERP')
+                                                        @if (!$mtrx['verified'])
+                                                            <a class="text-success m-1" href="javascript:void(0)"
+                                                                wire:click="markMerpAsVerified({{ $mtrx['id'] }},1)"
+                                                                title="{{ __('Verify Transaction') }}">
+                                                                <i class="fa fa-handshake-o fs-18"></i></a>
+                                                        @else
+                                                            <a class="text-info m-1" href="javascript:void(0)"
+                                                                wire:click="markMerpAsVerified({{ $mtrx['id'] }},0)"
+                                                                title="{{ __('Un verify Transaction') }}">
+                                                                <i class="fa fa-ban fs-18"></i></a>
+                                                        @endif
+                                                    @endif
+                                                </td>
+                                                <td><small>{{ $mtrx['trx_no'] }}</small></td>
+                                                <td><small>{{ $mtrx['trx_ref'] }}</small></td>
+                                                <td> <small>{{ $mtrx['description'] }}</small></td>
+                                                <td><small>{{ $mtrx['client'] }}</small></td>
+                                                <td>
+                                                    @if ($mtrx['trx_type'] == 'Income')
+                                                        {{ $mdebit > 0 ? number_format($mdebit, 2) : '' }}
+                                                        <small class="text-info">@money_format($mtrx['total_amount'] ?? 0) <span
+                                                                class="text-warning">({{ $mtrx['rate'] ?? 0 }})</span></small>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($mtrx['trx_type'] == 'Expense')
+                                                        {{ $mcredit > 0 ? number_format($mcredit, 2) : '' }}
+                                                        <small class="text-info">@money_format($mtrx['total_amount'] ?? 0) <span
+                                                                class="text-warning">({{ $mtrx['rate'] ?? 0 }})</span></small>
+                                                    @endif
+                                                </td>
+                                                <td>{{ number_format($mrunningBalance, 2) }}</td>
+                                            </tr>
+                                        @endforeach
+                                        <tr>
+                                            <td class="" colspan="5">Total</td>
+                                            <td>{{ number_format($mincomes, 2) }}</td>
+                                            <td>{{ number_format($mexpenses, 2) }}</td>
+                                            <td>{{ number_format($mincomes - $mexpenses, 2) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="card-body tab-pane" id="opTrx" role="tabpanel">
 
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="table-responsive project-invoice">
-                                    <table class="table table-bordered mb-0 table-sm">
+                                    <table class="table table-bordered mb-0 table-sm" style="font-size: 14px">
                                         <thead class="thead-light">
                                             <tr>
                                                 <th>TRX No.</th>
@@ -272,7 +384,7 @@
                             <div class="alert alert-warning">No transactions found.</div>
                         @else
                             <div class="table-responsive project-invoice">
-                                <table class="table table-bordered mb-0 table-sm">
+                                <table class="table table-bordered mb-0 table-sm" style="font-size: 14px">
                                     <thead class="thead-light">
                                         <tr>
                                             <th>Date</th>
@@ -306,7 +418,7 @@
 
                                             <tr>
                                                 <td>{{ $trx['trx_date'] }}
-                                                    @if (!$transaction->verified)
+                                                    @if (!$trx['verified'])
                                                         <a class="text-success m-1"
                                                             wire:click="markMerpAsVerified({{ $trx['id'] }},1)"
                                                             title="{{ __('Verify Transaction') }}">
