@@ -65,7 +65,17 @@ class Project extends Model
     {
         return $this->hasMany(ProjectMou::class, 'project_id', 'id');
     }
+    // Returns the earliest start_date among the MOUs
+    public function getProjectStartDateAttribute()
+    {
+        return $this->mous->min('start_date');
+    }
 
+    // Returns the latest end_date among the MOUs
+    public function getProjectEndDateAttribute()
+    {
+        return $this->mous->max('end_date');
+    }
     public function fundingBalance()
     {
         return $this->mous()->sum('funding_amount');

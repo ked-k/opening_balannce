@@ -73,7 +73,7 @@ class FmsViewProjectComponent extends Component
     public function mount($id)
     {
         $this->project_id = $id;
-        $this->ledger_account = Project::where('id', $this->project_id)->first();
+        $this->ledger_account = Project::where('id', $this->project_id)->with('mous')->first();
         $merpId = $this->ledger_account?->merp_id;
         $response = Http::get('https://merp-v2.makbrc.org/unit/ledger/' . $merpId);
         // $trxResponse = Http::get('http://merp.makbrc.online/unit/ledger/transactions/' . $this->ledger_account?->merp_id);

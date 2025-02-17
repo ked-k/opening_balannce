@@ -20,6 +20,11 @@
                         </div>
                     </div>
 
+                    @php
+                        $income = $transactions->where('trx_type', 'Income')->sum('amount_local');
+                        $expense = $transactions->where('trx_type', 'Expense')->sum('amount_local');
+                    @endphp
+
                     <div class="row d-print-none">
                         <div class="mb-3 col-md-3">
                             <label for="from_date" class="form-label">Transaction</label>
@@ -41,15 +46,42 @@
                             <input id="to_date" type="date" class="form-control" wire:model.lazy="to_date">
                         </div>
                         <div class="mt-4 col-md-2 mt-2">
-                            <button class="btn btn-outline-success btn-sm"
-                                wire:click="exportToExcel">{{ __('Export') }}</button>
-                            <a href="javascript:window.print()" class="btn btn-de-info btn-sm">Print</a>
+                            {{-- <button class="btn btn-outline-success btn-sm" --}}
+                            {{-- wire:click="exportToExcel">{{ __('Export') }}</button> --}}
+                            <a href="javascript:window.print()" class="btn btn-outline-info btn-sm">Print</a>
+
+                        </div>
+                        <div class="mb-3 col-md-3">
+                            <a href="javascript:window.print()" class="btn btn-outline-success pt-3 btn-sm"> <b>Start
+                                    Date</b>{{ $ledger_account->project_start_date ?? 'N/A' }}
+                                <b>End Date</b></a>
+                        </div>
+                        <div class="12">
+                            <table class="table table-bordered mb-0 table-sm">
+                                <thead class="thead-light">
+                                    <tr class="text-end">
+                                        <th>TOTAL INCOME</th>
+                                        <th>TOTAL EXPENSES</th>
+                                        <th>CURRENT BALANCE</th>
+                                        <th>MERP VALUE</th>
+                                        <th>MERP VALUE + LEDGER BALANCE</th>
+                                    </tr><!--end tr-->
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border-0 font-14 text-dark text-end">@money_format($income)</td>
+                                        <td class="border-0 font-14 text-dark text-end">@money_format($expense)</td>
+                                        @php
+                                            $ledgerBalance = $income - $expense;
+                                        @endphp
+                                        <td class="border-0 font-14 text-dark text-end">@money_format($ledgerBalance)</td>
+                                        <td class="border-0 font-14 text-dark text-end">@money_format($merpBalance)</td>
+                                        <td class="border-0 font-14 text-dark text-end">@money_format($ledgerBalance + $merpBalance)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div><!--end row-->
-                    @php
-                        $income = $transactions->where('trx_type', 'Income')->sum('amount_local');
-                        $expense = $transactions->where('trx_type', 'Expense')->sum('amount_local');
-                    @endphp
                 </div><!--end card-body-->
                 <div wire:loading>
                     <div class="spinner-border spinner-border-custom-3 border-success" role="status"></div>
@@ -68,37 +100,25 @@
                                         class="ti-user"></i></span> <span class="hidden-xs-down">New
                                     Transaction</span></a> </li>
                         <li class="nav-item"> <a class="nav-link" data-toggle="modal" data-target="#importModal"
-                                href="#profile" role="tab" aria-selected="false"><span class="hidden-sm-up"><i
+                                href="#profilec" role="tab" aria-selected="false"><span class="hidden-sm-up"><i
                                         class="ti-user"></i></span> <span class="hidden-xs-down">Import
                                     Transaction</span></a> </li>
-                    </ul>
+                        <li class="nav-item"> <a class="nav-link" href="#profilec" role="tab"
+                                aria-selected="false"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span
+                                    class="hidden-xs-down">
+                                    Start Date</span> {{ $ledger_account->project_start_date ?? 'N/A' }}</a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profilec" role="tab"
+                                aria-selected="false"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span
+                                    class="hidden-xs-down">
+                                    End Date</span>{{ $ledger_account->project_end_date ?? 'N/A' }}</a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#mou" role="tab"
+                                aria-selected="false"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span
+                                    class="hidden-xs-down">MOUs</span></a> </li>
                     </ul>
                 </div>
                 <div class="tab-content tabcontent-border">
                     <div class="card-body tab-pane active" id="home" role="tabpanel">
-                        <table class="table table-bordered mb-0 table-sm">
-                            <thead class="thead-light">
-                                <tr class="text-end">
-                                    <th>TOTAL INCOME</th>
-                                    <th>TOTAL EXPENSES</th>
-                                    <th>CURRENT BALANCE</th>
-                                    <th>MERP VALUE</th>
-                                    <th>MERP VALUE + LEDGER BALANCE</th>
-                                </tr><!--end tr-->
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="border-0 font-14 text-dark text-end">@money_format($income)</td>
-                                    <td class="border-0 font-14 text-dark text-end">@money_format($expense)</td>
-                                    @php
-                                        $ledgerBalance = $income - $expense;
-                                    @endphp
-                                    <td class="border-0 font-14 text-dark text-end">@money_format($ledgerBalance)</td>
-                                    <td class="border-0 font-14 text-dark text-end">@money_format($merpBalance)</td>
-                                    <td class="border-0 font-14 text-dark text-end">@money_format($ledgerBalance + $merpBalance)</td>
-                                </tr>
-                            </tbody>
-                        </table>
+
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="table-responsive project-invoice">
@@ -122,7 +142,8 @@
                                             @if ($from_date && $to_date)
                                                 <!-- Check if date range is applied -->
                                                 <tr>
-                                                    <td colspan="6" class="text-end"><strong>Previous Balance Carried
+                                                    <td colspan="6" class="text-end"><strong>Previous Balance
+                                                            Carried
                                                             Forward:</strong></td>
                                                     <td class="text-end">@money_format($balance)</td>
                                                 </tr>
@@ -172,7 +193,7 @@
                                                     <td> <small>{{ $transaction->trx_date }}</small></td>
                                                     <td>
                                                         <small
-                                                            class="mb-0 text-muted">{{ Str::words($transaction->description, 5, '.') }}<a
+                                                            class="mb-0 text-muted">{{ Str::words($transaction->description, 20, '.') }}<a
                                                                 href="javascript:void(0)" data-toggle="modal"
                                                                 data-target="#addnew"
                                                                 wire:click="editData({{ $transaction->id }})">...viewmore
@@ -227,132 +248,164 @@
                         </div><!--end row-->
                     </div><!--end card-body-->
                     <div class="card-body tab-pane p-20" id="profile" role="tabpanel">
+                        <h2 class="mb-4">Merp Transactions</h2>
+
+                        @if (empty($merpTransactions))
+                            <div class="alert alert-warning">No transactions found.</div>
+                        @else
+                            <div class="table-responsive project-invoice">
+                                <table class="table table-bordered mb-0 table-sm">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>TRX No</th>
+                                            <th>Reference</th>
+                                            <th>Description</th>
+                                            <th>Client</th>
+                                            <th>Income</th>
+                                            <th>Expense</th>
+                                            <th>Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $runningBalance = 0;
+                                        @endphp
+
+                                        @foreach ($merpTransactions as $trx)
+                                            @php
+                                                // Determine debit and credit amounts
+                                                $debit = $trx['trx_type'] == 'Income' ? $trx['amount_local'] : 0;
+                                                $credit = $trx['trx_type'] == 'Expense' ? $trx['amount_local'] : 0;
+
+                                                // Update running balance
+                                                $runningBalance = $runningBalance + $debit - $credit;
+                                            @endphp
+
+                                            <tr>
+                                                <td>{{ $trx['trx_date'] }}
+                                                    @if (!$transaction->verified)
+                                                        <a class="text-success m-1"
+                                                            wire:click="markMerpAsVerified({{ $trx['id'] }},1)"
+                                                            title="{{ __('Verify Transaction') }}">
+                                                            <i class="fa fa-handshake-o fs-18"></i></a>
+                                                    @else
+                                                        <a class="text-info m-1"
+                                                            wire:click="markMerpAsVerified({{ $trx['id'] }},0)"
+                                                            title="{{ __('Un verify Transaction') }}">
+                                                            <i class="fa fa-ban fs-18"></i></a>
+                                                    @endif
+                                                </td>
+                                                <td>{{ $trx['trx_no'] }}</td>
+                                                <td>{{ $trx['trx_ref'] }}</td>
+                                                <td> <small>{{ $trx['description'] }}</small></td>
+                                                <td><small>{{ $trx['client'] }}</small></td>
+                                                <td>
+                                                    @if ($trx['trx_type'] == 'Income')
+                                                        {{ $debit > 0 ? number_format($debit, 2) : '' }}
+                                                        <small class="text-info">@money_format($trx['total_amount'] ?? 0) <span
+                                                                class="text-warning">({{ $trx['rate'] ?? 0 }})</span></small>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($trx['trx_type'] == 'Expense')
+                                                        {{ $credit > 0 ? number_format($credit, 2) : '' }}
+                                                        <small class="text-info">@money_format($trx['total_amount'] ?? 0) <span
+                                                                class="text-warning">({{ $trx['rate'] ?? 0 }})</span></small>
+                                                    @endif
+                                                </td>
+                                                <td>{{ number_format($runningBalance, 2) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="card-body tab-pane p-20" id="mou" role="tabpanel">
                         <div>
                             <h2 class="mb-4">Merp Transactions</h2>
 
-                            @if (empty($merpTransactions))
+                            @if (empty($ledger_account->mous))
                                 <div class="alert alert-warning">No transactions found.</div>
                             @else
                                 <div class="table-responsive project-invoice">
                                     <table class="table table-bordered mb-0 table-sm">
                                         <thead class="thead-light">
                                             <tr>
-                                                <th>Date</th>
-                                                <th>TRX No</th>
-                                                <th>Reference</th>
-                                                <th>Description</th>
-                                                <th>Client</th>
-                                                <th>Income</th>
-                                                <th>Expense</th>
-                                                <th>Balance</th>
+                                                <th>No</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @php
-                                                $runningBalance = 0;
-                                            @endphp
 
-                                            @foreach ($merpTransactions as $trx)
-                                                @php
-                                                    // Determine debit and credit amounts
-                                                    $debit = $trx['trx_type'] == 'Income' ? $trx['amount_local'] : 0;
-                                                    $credit = $trx['trx_type'] == 'Expense' ? $trx['amount_local'] : 0;
-
-                                                    // Update running balance
-                                                    $runningBalance = $runningBalance + $debit - $credit;
-                                                @endphp
-
+                                            @foreach ($ledger_account->mous as $key => $mou)
                                                 <tr>
-                                                    <td>{{ $trx['trx_date'] }}
-                                                        @if (!$transaction->verified)
-                                                            <a class="text-success m-1"
-                                                                wire:click="markMerpAsVerified({{ $trx['id'] }},1)"
-                                                                title="{{ __('Verify Transaction') }}">
-                                                                <i class="fa fa-handshake-o fs-18"></i></a>
-                                                        @else
-                                                            <a class="text-info m-1"
-                                                                wire:click="markMerpAsVerified({{ $trx['id'] }},0)"
-                                                                title="{{ __('Un verify Transaction') }}">
-                                                                <i class="fa fa-ban fs-18"></i></a>
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $trx['trx_no'] }}</td>
-                                                    <td>{{ $trx['trx_ref'] }}</td>
-                                                    <td> <small>{{ $trx['description'] }}</small></td>
-                                                    <td><small>{{ $trx['client'] }}</small></td>
-                                                    <td>
-                                                        @if ($trx['trx_type'] == 'Income')
-                                                            {{ $debit > 0 ? number_format($debit, 2) : '' }}
-                                                            <small class="text-info">@money_format($trx['total_amount'] ?? 0) <span
-                                                                    class="text-warning">({{ $trx['rate'] ?? 0 }})</span></small>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($trx['trx_type'] == 'Expense')
-                                                            {{ $credit > 0 ? number_format($credit, 2) : '' }}
-                                                            <small class="text-info">@money_format($trx['total_amount'] ?? 0) <span
-                                                                    class="text-warning">({{ $trx['rate'] ?? 0 }})</span></small>
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ number_format($runningBalance, 2) }}</td>
+                                                    <td>{{ $key + 1 }}
+                                                    <td>{{ $mou->start_date }}</td>
+                                                    <td>{{ $mou->end_date }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
+                                </div>
                             @endif
                         </div>
 
                     </div>
                 </div>
             </div>
-        </div><!--end card-->
-        <div wire:ignore.self class="modal fade" id="addnew" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">{{ __('New Transaction') }}</h5>
-                        <button type="button" class="close" wire:click="close()" data-dismiss="modal"
-                            aria-hidden="true">×</button>
-                    </div>
-                    @include('livewire.finance.transactions-form')
+        </div>
+    </div><!--end card-->
+    <div wire:ignore.self class="modal fade" id="addnew" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ __('New Transaction') }}</h5>
+                    <button type="button" class="close" wire:click="close()" data-dismiss="modal"
+                        aria-hidden="true">×</button>
                 </div>
+                @include('livewire.finance.transactions-form')
             </div>
         </div>
-        <div wire:ignore.self class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Choose a file</h5>
-                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">x</button>
-                    </div>
-                    <form wire:submit.prevent="importData">
-                        <div class="modal-body">
-                            @include('layouts.messages')
-                            <div class="mb-3">
-                                <label for="entry_type" class="form-label required">Item File</label>
-                                <input type="file" wire:model.lazy="import_file" class="form-control" required
-                                    name="import_file" id="import_file_{{ $iteration }}">
-                                <div class="text-success text-small" wire:loading wire:target="import_file">Uploading
-                                    file...</div>
-                                @error('import_file')
-                                    <div class="text-danger text-small">{{ $message }}</div>
-                                @enderror
-                            </div>
+    </div>
+    <div wire:ignore.self class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Choose a file</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <form wire:submit.prevent="importData">
+                    <div class="modal-body">
+                        @include('layouts.messages')
+                        <div class="mb-3">
+                            <label for="entry_type" class="form-label required">Item File</label>
+                            <input type="file" wire:model.lazy="import_file" class="form-control" required
+                                name="import_file" id="import_file_{{ $iteration }}">
+                            <div class="text-success text-small" wire:loading wire:target="import_file">Uploading
+                                file...</div>
+                            @error('import_file')
+                                <div class="text-danger text-small">{{ $message }}</div>
+                            @enderror
                         </div>
+                    </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger"
-                                data-dismiss="modal">{{ __('close') }}</button>
-                            <button type="submit" class="btn btn-success">{{ __('upload') }}</button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger"
+                            data-dismiss="modal">{{ __('close') }}</button>
+                        <button type="submit" class="btn btn-success">{{ __('upload') }}</button>
+                    </div>
+                </form>
             </div>
         </div>
-        {{-- @include('livewire.finance.ledger.inc.viewTransaction') --}}
-        {{-- @include('livewire.finance.ledger.inc.repostransaction') --}}
-    </div><!--end col-->
+    </div>
+    {{-- @include('livewire.finance.ledger.inc.viewTransaction') --}}
+    {{-- @include('livewire.finance.ledger.inc.repostransaction') --}}
+</div><!--end col-->
 </div><!--end row-->
 </div>
