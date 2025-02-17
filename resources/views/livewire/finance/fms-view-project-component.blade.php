@@ -2,6 +2,19 @@
     @include('livewire.layouts.partials.inc.create-resource')
 
     <div class="row">
+        <style>
+            .card-header {
+                position: sticky;
+                top: 0;
+                /* Sticks to the top */
+                background-color: #fff;
+                /* Ensure header has a background */
+                z-index: 10;
+                /* Ensures it stays above the content */
+                padding: 1rem;
+                border-bottom: 1px solid #ddd;
+            }
+        </style>
         <div class="col-lg-11 mx-auto">
             <div class="card">
                 <div class="card-body invoice-head">
@@ -56,8 +69,8 @@
                                     Date</b>{{ $ledger_account->project_start_date ?? 'N/A' }}
                                 <b>End Date</b></a>
                         </div>
-                        <div class="12">
-                            <table class="table table-bordered mb-0 table-sm">
+                        <div class="col-md-12">
+                            <table class="table table-bordered mb-0 table-sm" width="100%">
                                 <thead class="thead-light">
                                     <tr class="text-end">
                                         <th>TOTAL INCOME</th>
@@ -69,14 +82,19 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="border-0 font-14 text-dark text-end">@money_format($income)</td>
-                                        <td class="border-0 font-14 text-dark text-end">@money_format($expense)</td>
+                                        <td class="border-0 font-14 text-dark text-end float-right">@money_format($income)
+                                        </td>
+                                        <td class="border-0 font-14 text-dark text-end float-right">@money_format($expense)
+                                        </td>
                                         @php
                                             $ledgerBalance = $income - $expense;
                                         @endphp
-                                        <td class="border-0 font-14 text-dark text-end">@money_format($ledgerBalance)</td>
-                                        <td class="border-0 font-14 text-dark text-end">@money_format($merpBalance)</td>
-                                        <td class="border-0 font-14 text-dark text-end">@money_format($ledgerBalance + $merpBalance)</td>
+                                        <td class="border-0 font-14 text-dark text-end float-right">@money_format($ledgerBalance)
+                                        </td>
+                                        <td class="border-0 font-14 text-dark text-end float-right">@money_format($merpBalance)
+                                        </td>
+                                        <td class="border-0 font-14 text-dark text-end float-right">@money_format($ledgerBalance + $merpBalance)
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -280,6 +298,8 @@
 
                                                 // Update running balance
                                                 $runningBalance = $runningBalance + $debit - $credit;
+                                                $income = $debit + $income;
+                                                $expense = $credit + $expense;
                                             @endphp
 
                                             <tr>
@@ -317,6 +337,12 @@
                                                 <td>{{ number_format($runningBalance, 2) }}</td>
                                             </tr>
                                         @endforeach
+                                        <tr>
+                                            <td class="" colspan="5">Total</td>
+                                            <td>{{ number_format($income, 2) }}</td>
+                                            <td>{{ number_format($expense, 2) }}</td>
+                                            <td>{{ number_format($income - $expense, 2) }}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -325,10 +351,10 @@
 
                     <div class="card-body tab-pane p-20" id="mou" role="tabpanel">
                         <div>
-                            <h2 class="mb-4">Merp Transactions</h2>
+                            <h2 class="mb-4">Project Agreements</h2>
 
                             @if (empty($ledger_account->mous))
-                                <div class="alert alert-warning">No transactions found.</div>
+                                <div class="alert alert-warning">No MOUs found.</div>
                             @else
                                 <div class="table-responsive project-invoice">
                                     <table class="table table-bordered mb-0 table-sm">
