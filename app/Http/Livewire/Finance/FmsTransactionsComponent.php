@@ -214,7 +214,7 @@ class FmsTransactionsComponent extends Component
                 $payable = Project::where('id', $this->project_id)->first();
                 // $cashAccount->update();
                 $trans = FmsTransaction::where('id', $this->edit_id)->first();
-                $trans->trx_no = 'Trx' . time();
+                // $trans->trx_no = 'Trx' . time();
                 $trans->trx_ref = $this->trx_ref;
                 $trans->trx_date = $this->trx_date;
                 $trans->client = $this->client;
