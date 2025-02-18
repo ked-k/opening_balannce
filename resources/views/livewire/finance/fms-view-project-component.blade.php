@@ -365,7 +365,7 @@
                             </div><!--end col-->
                         </div><!--end row-->
                     </div><!--end card-body-->
-                    <div class="card-body tab-pane p-20" id="profile" role="tabpanel">
+                    {{-- <div class="card-body tab-pane p-20" id="profile" role="tabpanel">
                         <h2 class="mb-4">Merp Transactions</h2>
 
                         @if (empty($merpTransactions))
@@ -449,7 +449,7 @@
                                 </table>
                             </div>
                         @endif
-                    </div>
+                    </div> --}}
 
                     <div class="card-body tab-pane p-20" id="mou" role="tabpanel">
                         <div>
@@ -532,6 +532,4 @@
             </div>
         </div>
     </div>
-    {{-- @include('livewire.finance.ledger.inc.viewTransaction') --}}
-    {{-- @include('livewire.finance.ledger.inc.repostransaction') --}}
 </div><!--end col-->
