@@ -122,7 +122,9 @@
                 </div>
                 <div class="tab-content tabcontent-border">
                     <div class="card-body tab-pane active" id="home" role="tabpanel">
-                        <h2 class="mb-4">Combined Transactions</h2>
+                        <h2 class="mb-4">Combined Transactions <a href="javascript:void(0)"
+                                class="btn btn-outline-success btn-sm"
+                                wire:click="exportCombined">{{ __('Export') }}</a> </h2>
 
                         @if (empty($combinedTransactions))
                             <div class="alert alert-warning">No transactions found.</div>
@@ -236,7 +238,6 @@
                         @endif
                     </div>
                     <div class="card-body tab-pane" id="opTrx" role="tabpanel">
-
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="table-responsive project-invoice">

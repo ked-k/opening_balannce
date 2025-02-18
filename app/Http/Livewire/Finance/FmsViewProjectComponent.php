@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Finance;
 
+use App\Exports\FmsTrxCombinedExport;
 use App\Exports\FmsTrxExport;
 use App\Imports\TransactionsImport;
 use App\Models\Finance\ExpenseType;
@@ -69,6 +70,11 @@ class FmsViewProjectComponent extends Component
                 'text' => 'No services selected for export!',
             ]);
         }
+    }
+    public function exportCombined()
+    {
+        return Excel::download(new FmsTrxCombinedExport($this->localTrx(), $this->ledger_account), $this->ledger_account->name . '_combined_transactions.xlsx');
+
     }
     public function mount($id)
     {
