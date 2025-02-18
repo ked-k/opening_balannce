@@ -373,7 +373,7 @@ class FmsViewProjectComponent extends Component
     {
         // Merge the two data sets using collections
         $localTransactions = $this->mainQuery()->select([
-            'id', 'trx_date', 'trx_no', 'trx_ref', 'client', 'amount_local', 'total_amount', 'trx_type', 'description', 'entry_type', 'verified',
+            'id', 'trx_date', 'trx_no', 'trx_ref', 'client', 'amount_local', 'total_amount', 'rate', 'trx_type', 'description', 'entry_type', 'verified',
         ])->get()->toArray();
         return $mergedTransactions = collect($this->merpTransactions)->merge($localTransactions)
             ->sortBy(function ($trx) {
