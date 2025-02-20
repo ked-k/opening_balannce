@@ -26,8 +26,9 @@
                                             <th>No.</th>
                                             <th>{{ __('Name') }}</th>
                                             <th>{{ __('Category') }}</th>
-                                            <th>{{ __('Funding') }}</th>
+                                            <th>{{ __('MERP Amount') }}</th>
                                             <th>{{ __('Current Balance') }}</th>
+                                            <th>{{ __('Actual Balance') }}</th>
                                             <th>{{ __('Start Date') }}</th>
                                             <th>{{ __('End Date') }}</th>
                                             {{-- <th>{{ __('PI') }}</th> --}}
@@ -43,8 +44,9 @@
                                                 <td>{{ $key + 1 }}</td>
                                                 <td title="{{ $project->name }}">{{ $project->project_code }}</td>
                                                 <td>{{ $project->project_category }}</td>
-                                                <td>@money_format($project->fundingBalance())</td>
+                                                <td>@money_format($project->merp_amount)</td>
                                                 <td>@money_format($project->getCurrentBalance())</td>
+                                                <td>@money_format($project->getCurrentBalance() + $project->merp_amount)</td>
                                                 <td>@formatDate($project->project_start_date)</td>
                                                 <td>@formatDate($project->project_end_date)</td>
                                                 {{-- <td>{{ $project->principalInvestigator?->fullName ?? 'N/A' }}</td> --}}
