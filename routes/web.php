@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Livewire\Finance\FmsCurrenciesComponent;
 use App\Http\Livewire\Finance\FmsProjectsComponent;
 use App\Http\Livewire\Finance\FmsTransactionsComponent;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Session;
  */
 
 Route::get('/', [AuthenticatedSessionController::class, 'create'])->middleware('guest')->name('login');
+Route::get('/balance', [ProfileController::class, 'getMerpBlc']);
 Route::get('user/account', UserProfileComponent::class)->name('user.account')->middleware('auth');
 
 Route::get('lang/{locale}', function ($locale) {

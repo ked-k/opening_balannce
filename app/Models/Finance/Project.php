@@ -48,6 +48,7 @@ class Project extends Model
         'progress_status',
         'merp_id',
         'funding_source',
+        'merp_amount',
     ];
     public function getActivitylogOptions(): LogOptions
     {
