@@ -94,19 +94,19 @@ class ProjectListExport implements FromCollection, WithMapping, WithHeadings, Wi
             // Format the second column (Price) as currency
             4 => [
                 'numberFormat' => [
-                    'formatCode' => NumberFormat::FORMAT_ACCOUNTING_USD, // USD Currency format
+                    'formatCode' => NumberFormat::FORMAT_CURRENCY_USD, // USD Currency format
                 ],
             ],
             // Format the third column (Quantity) as a number (no decimal places)
             5 => [
                 'numberFormat' => [
-                    'formatCode' => NumberFormat::FORMAT_ACCOUNTING_USD, // Plain number with no decimal
+                    'formatCode' => NumberFormat::FORMAT_CURRENCY_USD, // Plain number with no decimal
                 ],
             ],
             // Format the fourth column (Total) as currency
             6 => [
                 'numberFormat' => [
-                    'formatCode' => NumberFormat::FORMAT_ACCOUNTING_USD, // USD Currency format
+                    'formatCode' => NumberFormat::FORMAT_CURRENCY_USD, // USD Currency format
                 ],
             ],
         ];
