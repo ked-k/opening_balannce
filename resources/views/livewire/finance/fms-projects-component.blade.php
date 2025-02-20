@@ -47,8 +47,8 @@
                                                 <td>@money_format($project->merp_amount)</td>
                                                 <td>@money_format($project->getCurrentBalance())</td>
                                                 <td>@money_format($project->getCurrentBalance() + $project->merp_amount)</td>
-                                                <td>@formatDate($project->project_start_date)</td>
-                                                <td>@formatDate($project->project_end_date)</td>
+                                                <td>{{ $project->project_start_date }}</td>
+                                                <td>{{ $project->project_end_date }}</td>
                                                 {{-- <td>{{ $project->principalInvestigator?->fullName ?? 'N/A' }}</td> --}}
                                                 <td>{{ $project->fa_percentage_fee }}
                                                 </td>

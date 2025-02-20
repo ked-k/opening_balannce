@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Finance;
 
+use App\Exports\ProjectListExport;
 use App\Models\Finance\MerpProject;
 use App\Models\Finance\Project;
 use App\Models\Finance\ProjectMou;
@@ -313,7 +314,7 @@ class FmsProjectsComponent extends Component
     public function export()
     {
         if (count($this->projectIds) > 0) {
-            // return (new ProjectListExport($this->projectIds))->download('Projects_' . date('d-m-Y') . '_' . now()->toTimeString() . '.xlsx');
+            return (new ProjectListExport($this->projectIds))->download('Projects_' . date('d-m-Y') . '_' . now()->toTimeString() . '.xlsx');
         } else {
             $this->dispatchBrowserEvent('swal:modal', [
                 'type' => 'info',
