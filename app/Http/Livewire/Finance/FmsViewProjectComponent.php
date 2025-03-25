@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Livewire\Finance;
 
 use App\Exports\FmsTrxCombinedExport;
@@ -36,8 +35,8 @@ class FmsViewProjectComponent extends Component
     public $createNew = false;
 
     public $toggleForm = false;
-    public $editMode = false;
-    public $filter = false;
+    public $editMode   = false;
+    public $filter     = false;
     public $edit_id;
     public $trx_no;
     public $trx_ref;
@@ -57,7 +56,7 @@ class FmsViewProjectComponent extends Component
     public $delete_id;
     public $previous_balance;
     public $ledger_account;
-    public $merpBalance = 0;
+    public $merpBalance            = 0;
     public array $merpTransactions = [];
     public function export()
     {
@@ -65,9 +64,9 @@ class FmsViewProjectComponent extends Component
             return (new FmsTrxExport($this->exportIds))->download('transactions_' . date('d-m-Y') . '_' . now()->toTimeString() . '.xlsx');
         } else {
             $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'warning',
+                'type'    => 'warning',
                 'message' => 'Oops! Something Went Wrong!',
-                'text' => 'No services selected for export!',
+                'text'    => 'No services selected for export!',
             ]);
         }
     }
@@ -78,16 +77,18 @@ class FmsViewProjectComponent extends Component
     }
     public function mount($id)
     {
-        $this->project_id = $id;
+        $this->project_id     = $id;
         $this->ledger_account = Project::where('id', $this->project_id)->with('mous')->first();
-        $merpId = $this->ledger_account?->merp_id;
-        $response = Http::get('https://merp-v2.makbrc.org/unit/ledger/' . $merpId);
+        $merpId               = $this->ledger_account?->merp_id;
+        $type                 = $this->ledger_account?->type ?? 'Project';
+        // dd($type);
+        $response = Http::get("https://merp-v2.makbrc.org/unit/ledger/{$merpId}/{$type}");
         // $trxResponse = Http::get('http://merp.makbrc.online/unit/ledger/transactions/' . $this->ledger_account?->merp_id);
         try {
-            $trxResponse = Http::get("https://merp-v2.makbrc.org/unit/ledger/transactions/{$merpId}");
+            $trxResponse = Http::get("https://merp-v2.makbrc.org/unit/ledger/transactions/{$merpId}/{$type}");
 
             if ($trxResponse->successful()) {
-                $data = $trxResponse->json();
+                $data         = $trxResponse->json();
                 $transactions = $data['transactions'] ?? [];
                 // Sort transactions by trx_date (chronological order)
                 usort($transactions, function ($a, $b) {
@@ -103,7 +104,7 @@ class FmsViewProjectComponent extends Component
             // return back()->with('error', 'Error fetching transactions. ' . $e->getMessage());
         }
         if ($response->successful()) {
-            $data = $response->json(); // Decode the JSON response to an array
+            $data              = $response->json(); // Decode the JSON response to an array
             $this->merpBalance = $data['balance'];
         } else {
             // Handle errors, if the request fails
@@ -136,18 +137,18 @@ class FmsViewProjectComponent extends Component
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
             foreach ($failures as $failure) {
-                $failure->row(); // row that went wrong
+                $failure->row();       // row that went wrong
                 $failure->attribute(); // either heading key (if using heading row concern) or column index
-                $failure->errors(); // Actual error messages from Laravel validator
-                $failure->values(); // The values of the row that has failed.
+                $failure->errors();    // Actual error messages from Laravel validator
+                $failure->values();    // The values of the row that has failed.
             }
             foreach ($failure->errors() as $err) {
             }
             $this->dispatchBrowserEvent('close-modal');
             $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'error',
+                'type'    => 'error',
                 'message' => 'Something went wrong!',
-                'text' => 'Failed to import samples.' . $err,
+                'text'    => 'Failed to import samples.' . $err,
             ]);
         }
     }
@@ -193,9 +194,9 @@ class FmsViewProjectComponent extends Component
     public function updatedTotalAmount()
     {
         $total_amount = (float) str_replace(',', '', $this->total_amount);
-        $rate = (float) str_replace(',', '', $this->rate);
+        $rate         = (float) str_replace(',', '', $this->rate);
         if (is_numeric($total_amount) && is_numeric($rate)) {
-            $amount_local = $rate * $total_amount;
+            $amount_local       = $rate * $total_amount;
             $this->amount_local = round($amount_local, 2);
 
         }
@@ -204,43 +205,43 @@ class FmsViewProjectComponent extends Component
     {
         $this->validate([
             // 'trx_no' => 'required',
-            'trx_ref' => 'required',
-            'trx_date' => 'required',
-            'client' => 'required',
-            'total_amount' => 'required',
-            'amount_local' => 'required',
+            'trx_ref'         => 'required',
+            'trx_date'        => 'required',
+            'client'          => 'required',
+            'total_amount'    => 'required',
+            'amount_local'    => 'required',
             // 'deductions' => 'required',
-            'rate' => 'required',
-            'project_id' => 'required',
-            'currency_id' => 'required',
+            'rate'            => 'required',
+            'project_id'      => 'required',
+            'currency_id'     => 'required',
             'expense_type_id' => 'required',
-            'ledger_account' => 'nullable',
-            'trx_type' => 'required',
+            'ledger_account'  => 'nullable',
+            'trx_type'        => 'required',
             // 'entry_type' => 'required',
-            'description' => 'required',
+            'description'     => 'required',
         ]);
         try {
             DB::transaction(function () {
                 $total_amount = (float) str_replace(',', '', $this->total_amount);
-                $tax = 0;
-                $payable = Project::where('id', $this->project_id)->first();
+                $tax          = 0;
+                $payable      = Project::where('id', $this->project_id)->first();
                 // $cashAccount->update();
-                $trans = new FmsTransaction();
-                $trans->trx_no = 'Trx' . time();
-                $trans->trx_ref = $this->trx_ref;
-                $trans->trx_date = $this->trx_date;
-                $trans->client = $this->client;
-                $trans->total_amount = $total_amount;
-                $trans->amount_local = $this->amount_local;
-                $trans->deductions = 0;
-                $trans->rate = $this->rate;
-                $trans->project_id = $this->project_id;
-                $trans->currency_id = $this->currency_id;
+                $trans                  = new FmsTransaction();
+                $trans->trx_no          = 'Trx' . time();
+                $trans->trx_ref         = $this->trx_ref;
+                $trans->trx_date        = $this->trx_date;
+                $trans->client          = $this->client;
+                $trans->total_amount    = $total_amount;
+                $trans->amount_local    = $this->amount_local;
+                $trans->deductions      = 0;
+                $trans->rate            = $this->rate;
+                $trans->project_id      = $this->project_id;
+                $trans->currency_id     = $this->currency_id;
                 $trans->expense_type_id = $this->expense_type_id;
-                $trans->ledger_account = $this->ledger_account;
-                $trans->trx_type = $this->trx_type;
-                $trans->entry_type = 'OP';
-                $trans->description = $this->description;
+                $trans->ledger_account  = $this->ledger_account;
+                $trans->trx_type        = $this->trx_type;
+                $trans->entry_type      = 'OP';
+                $trans->description     = $this->description;
                 $trans->requestable()->associate($payable);
                 $trans->save();
 
@@ -251,9 +252,9 @@ class FmsViewProjectComponent extends Component
             });
         } catch (\Exception $e) {
             $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'warning',
+                'type'    => 'warning',
                 'message' => 'Oops! Something Went Wrong!',
-                'text' => 'Transaction failed!' . $e->getMessage(),
+                'text'    => 'Transaction failed!' . $e->getMessage(),
             ]);
             $this->dispatchBrowserEvent('alert', ['type' => 'error', 'message' => 'Transaction failed!' . $e->getMessage()]);
         }
@@ -262,43 +263,43 @@ class FmsViewProjectComponent extends Component
     {
         $this->validate([
             // 'trx_no' => 'required',
-            'trx_ref' => 'required',
-            'trx_date' => 'required',
-            'client' => 'required',
-            'total_amount' => 'required',
-            'amount_local' => 'required',
+            'trx_ref'         => 'required',
+            'trx_date'        => 'required',
+            'client'          => 'required',
+            'total_amount'    => 'required',
+            'amount_local'    => 'required',
             // 'deductions' => 'required',
-            'rate' => 'required',
-            'project_id' => 'required',
-            'currency_id' => 'required',
+            'rate'            => 'required',
+            'project_id'      => 'required',
+            'currency_id'     => 'required',
             'expense_type_id' => 'required',
-            'ledger_account' => 'nullable',
-            'trx_type' => 'required',
+            'ledger_account'  => 'nullable',
+            'trx_type'        => 'required',
             // 'entry_type' => 'required',
-            'description' => 'required',
+            'description'     => 'required',
         ]);
         try {
             DB::transaction(function () {
                 $total_amount = (float) str_replace(',', '', $this->total_amount);
-                $tax = 0;
-                $payable = Project::where('id', $this->project_id)->first();
+                $tax          = 0;
+                $payable      = Project::where('id', $this->project_id)->first();
                 // $cashAccount->update();
-                $trans = FmsTransaction::where('id', $this->edit_id)->first();
-                $trans->trx_no = 'Trx' . time();
-                $trans->trx_ref = $this->trx_ref;
-                $trans->trx_date = $this->trx_date;
-                $trans->client = $this->client;
-                $trans->total_amount = $total_amount;
-                $trans->amount_local = $this->amount_local;
-                $trans->deductions = 0;
-                $trans->rate = $this->rate;
-                $trans->project_id = $this->project_id;
-                $trans->currency_id = $this->currency_id;
+                $trans                  = FmsTransaction::where('id', $this->edit_id)->first();
+                $trans->trx_no          = 'Trx' . time();
+                $trans->trx_ref         = $this->trx_ref;
+                $trans->trx_date        = $this->trx_date;
+                $trans->client          = $this->client;
+                $trans->total_amount    = $total_amount;
+                $trans->amount_local    = $this->amount_local;
+                $trans->deductions      = 0;
+                $trans->rate            = $this->rate;
+                $trans->project_id      = $this->project_id;
+                $trans->currency_id     = $this->currency_id;
                 $trans->expense_type_id = $this->expense_type_id;
-                $trans->ledger_account = $this->ledger_account;
-                $trans->trx_type = $this->trx_type;
-                $trans->entry_type = 'OP';
-                $trans->description = $this->description;
+                $trans->ledger_account  = $this->ledger_account;
+                $trans->trx_type        = $this->trx_type;
+                $trans->entry_type      = 'OP';
+                $trans->description     = $this->description;
                 $trans->requestable()->associate($payable);
                 $trans->save();
 
@@ -309,9 +310,9 @@ class FmsViewProjectComponent extends Component
             });
         } catch (\Exception $e) {
             $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'warning',
+                'type'    => 'warning',
                 'message' => 'Oops! Something Went Wrong!',
-                'text' => 'Transaction failed!' . $e->getMessage(),
+                'text'    => 'Transaction failed!' . $e->getMessage(),
             ]);
             $this->dispatchBrowserEvent('alert', ['type' => 'error', 'message' => 'Transaction failed!' . $e->getMessage()]);
         }
@@ -341,20 +342,20 @@ class FmsViewProjectComponent extends Component
     }
     public function editData($id)
     {
-        $trans = FmsTransaction::where('id', $id)->with('requestable')->first();
-        $this->edit_id = $trans->id;
-        $this->trx_ref = $trans->trx_ref;
-        $this->trx_date = $trans->trx_date;
-        $this->rate = $trans->rate;
-        $this->amount_local = $trans->amount_local;
+        $trans                 = FmsTransaction::where('id', $id)->with('requestable')->first();
+        $this->edit_id         = $trans->id;
+        $this->trx_ref         = $trans->trx_ref;
+        $this->trx_date        = $trans->trx_date;
+        $this->rate            = $trans->rate;
+        $this->amount_local    = $trans->amount_local;
         $this->expense_type_id = $trans->expense_type_id;
-        $this->project_id = $trans->project_id;
-        $this->currency_id = $trans->currency_id;
-        $this->client = $trans->client;
-        $this->trx_type = $trans->trx_type;
-        $this->description = $trans->description;
-        $this->total_amount = $trans->total_amount;
-        $this->editMode = true;
+        $this->project_id      = $trans->project_id;
+        $this->currency_id     = $trans->currency_id;
+        $this->client          = $trans->client;
+        $this->trx_type        = $trans->trx_type;
+        $this->description     = $trans->description;
+        $this->total_amount    = $trans->total_amount;
+        $this->editMode        = true;
     }
     public function mainQuery()
     {
@@ -384,10 +385,10 @@ class FmsViewProjectComponent extends Component
 
     public function render()
     {
-        $data['projects'] = Project::get();
+        $data['projects']             = Project::get();
         $data['combinedTransactions'] = $this->localTrx();
-        $data['expenseTypes'] = ExpenseType::where('type', $this->trx_type)->get();
-        $exdata = $data['transactions'] = $this->mainQuery()->orderBy('trx_date', 'asc')->get();
+        $data['expenseTypes']         = ExpenseType::where('type', $this->trx_type)->get();
+        $exdata                       = $data['transactions']                       = $this->mainQuery()->orderBy('trx_date', 'asc')->get();
         if ($this->from_date && $this->to_date) {
             // Calculate the previous balance (balance before the filtered date range)
             $this->previous_balance = FmsTransaction::where('bank_id', $this->ledger_id)
