@@ -171,7 +171,7 @@ class FmsViewProjectComponent extends Component
                 ];
             });
             // dd($transactions);
-            $response = Http::get("http://merp.makbrc.online/unit/ledger/sync/{$this->merpId}/{$this->type}/{$this->project_id}");
+            $response = Http::get("https://merp-v2.makbrc.org/unit/ledger/sync/{$this->merpId}/{$this->type}/{$this->project_id}");
 
             if ($response->failed()) {
                 $this->dispatchBrowserEvent('alert', [
