@@ -75,17 +75,20 @@ class FmsViewProjectComponent extends Component
         return Excel::download(new FmsTrxCombinedExport($this->localTrx(), $this->ledger_account), $this->ledger_account->name . '_combined_transactions.xlsx');
 
     }
+    public $type;
+    public $merpId;
     public function mount($id)
     {
         $this->project_id     = $id;
         $this->ledger_account = Project::where('id', $this->project_id)->with('mous')->first();
-        $merpId               = $this->ledger_account?->merp_id;
-        $type                 = $this->ledger_account?->type ?? 'Project';
+        $this->merpId         = $merpId         = $this->ledger_account?->merp_id;
+        $this->type           = $type           = $this->ledger_account?->type ?? 'Project';
         // dd($type);
         $response = Http::get("https://merp-v2.makbrc.org/unit/ledger/{$merpId}/{$type}");
-        // $trxResponse = Http::get('http://merp.makbrc.online/unit/ledger/transactions/' . $this->ledger_account?->merp_id);
+        // $response = Http::get("http://merp.makbrc.online/unit/ledger/{$merpId}/{$type}");
         try {
             $trxResponse = Http::get("https://merp-v2.makbrc.org/unit/ledger/transactions/{$merpId}/{$type}");
+            // $trxResponse = Http::get("http://merp.makbrc.online/unit/ledger/transactions/{$merpId}/{$type}");
 
             if ($trxResponse->successful()) {
                 $data         = $trxResponse->json();
@@ -112,6 +115,84 @@ class FmsViewProjectComponent extends Component
         }
         // dd($this->merpTransactions);
     }
+
+    public function syncTransactionsb()
+    {
+        try {
+            // Get transactions and filter specific fields
+            $transactions = FmsTransaction::where('project_id', $this->project_id)->get()->map(function ($trx) {
+                return [
+                    'trx_no'       => $trx->trx_no,
+                    'trx_ref'      => $trx->trx_ref,
+                    'trx_date'     => $trx->trx_date,
+                    'total_amount' => $trx->total_amount,
+                    'amount_local' => $trx->amount_local,
+                    'deductions'   => $trx->deductions,
+                    'rate'         => $trx->rate,
+                    'project_id'   => $trx->project_id,
+                    'currency_id'  => $trx->currency_id,
+                    'trx_type'     => $trx->trx_type,
+                    'status'       => 'Paid',
+                    'description'  => trim($trx->description . ' For ' . ($trx->client ?? '')),
+                    'entry_type'   => 'OP',
+                ];
+            })->values()->toArray(); // Ensures indexed array
+
+            // Send transactions as JSON in a POST request
+            $trxResponse = Http::post("http://merp.makbrc.online/unit/ledger/sync/{$this->merpId}/{$this->type}", [
+                'transactions' => $transactions,
+            ]);
+
+            dd($trxResponse->json());
+        } catch (\Exception $e) {
+            Log::error('Transaction sync failed', ['error' => $e->getMessage()]);
+            $res = response()->json(['error' => 'Transaction sync failed.'], 500);
+            dd($e);
+        }
+    }
+    public function syncTransactions()
+    {
+        try {
+            $transactions = FmsTransaction::where('project_id', $this->project_id)->get()->map(function ($trx) {
+                return [
+                    'trx_no'       => $trx->trx_no,
+                    'trx_ref'      => $trx->trx_ref,
+                    'trx_date'     => $trx->trx_date,
+                    'total_amount' => $trx->total_amount,
+                    'amount_local' => $trx->amount_local,
+                    'deductions'   => $trx->deductions,
+                    'rate'         => $trx->rate,
+                    'project_id'   => $trx->project_id,
+                    'currency_id'  => $trx->currency_id,
+                    'trx_type'     => $trx->trx_type,
+                    'status'       => 'Paid',
+                    'description'  => $trx->description . ' For ' . ($trx->client ?? ''),
+                    'entry_type'   => 'OP',
+                ];
+            });
+            // dd($transactions);
+            $response = Http::get("http://merp.makbrc.online/unit/ledger/sync/{$this->merpId}/{$this->type}/{$this->project_id}");
+
+            if ($response->failed()) {
+                $this->dispatchBrowserEvent('alert', [
+                    'type'    => 'error',
+                    'message' => 'Failed to sync transactions: ' . ($response->json()['message'] ?? 'Unknown error'),
+                ]);
+            } else {
+                $this->dispatchBrowserEvent('alert', [
+                    'type'    => 'success',
+                    'message' => 'Transactions synced successfully!' . ($response->json()['message'] ?? 'done'),
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            $this->dispatchBrowserEvent('alert', [
+                'type'    => 'error',
+                'message' => 'An error occurred: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
     public $iteration;
     public $import_file;
     public function importData()

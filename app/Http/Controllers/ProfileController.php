@@ -1,8 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Finance\FmsTransaction;
 use App\Models\Finance\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,14 +16,58 @@ class ProfileController extends Controller
      *
      * @return \Illuminate\View\View
      */
+    public function fetchTransactions($id)
+    {
+        try {
+            // Fetch project with ledger relationship
 
+            // Check if ledger exists
+            if (! $id) {
+                return response()->json([
+                    'success'      => false,
+                    'message'      => 'No ledger found for this project.',
+                    'transactions' => [],
+                ], 404);
+            }
+
+            // Get transactions and filter specific fields
+            $transactions = FmsTransaction::where('project_id', $id)->get()->map(function ($trx) {
+                return [
+                    'trx_no'       => $trx->trx_no,
+                    'trx_ref'      => $trx->trx_ref,
+                    'trx_date'     => $trx->trx_date,
+                    'total_amount' => $trx->total_amount,
+                    'amount_local' => $trx->amount_local,
+                    'deductions'   => $trx->deductions,
+                    'rate'         => $trx->rate,
+                    'project_id'   => $trx->project_id,
+                    'currency_id'  => $trx->currency_id,
+                    'trx_type'     => $trx->trx_type,
+                    'status'       => 'Paid',
+                    'description'  => $trx->description . ' For ' . ($trx->client ?? ''),
+                    'entry_type'   => 'OP',
+                ];
+            });
+
+            return response()->json([
+                'success'      => true,
+                'transactions' => $transactions,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching transactions.',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
     public function getMerpBlc()
     {
         $projects = Project::whereNotNull('merp_id')->get();
         foreach ($projects as $project) {
             $response = Http::get('https://merp-v2.makbrc.org/unit/ledger/' . $project->merp_id);
             if ($response->successful()) {
-                $data = $response->json(); // Decode the JSON response to an array
+                $data        = $response->json(); // Decode the JSON response to an array
                 $merpBalance = $data['balance'];
             } else {
                 // Handle errors, if the request fails

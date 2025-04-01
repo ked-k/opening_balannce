@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Session;
  */
 
 Route::get('/', [AuthenticatedSessionController::class, 'create'])->middleware('guest')->name('login');
+Route::get('/get-transactions/{id}', [ProfileController::class, 'fetchTransactions']);
 Route::get('/balance', [ProfileController::class, 'getMerpBlc']);
 Route::get('user/account', UserProfileComponent::class)->name('user.account')->middleware('auth');
 

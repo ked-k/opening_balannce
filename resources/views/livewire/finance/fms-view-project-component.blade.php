@@ -46,8 +46,8 @@
                             <input id="to_date" type="date" class="form-control" wire:model.lazy="to_date">
                         </div>
                         <div class="mt-4 col-md-2 mt-2">
-                            {{-- <button class="btn btn-outline-success btn-sm" --}}
-                            {{-- wire:click="exportToExcel">{{ __('Export') }}</button> --}}
+                            <button class="btn btn-outline-success btn-sm"
+                                wire:click="syncTransactions">{{ __('Synch') }}</button>
                             <a href="javascript:window.print()" class="btn btn-outline-info btn-sm">Print</a>
 
                         </div>
@@ -533,4 +533,16 @@
             </div>
         </div>
     </div>
+    <div x-data="{ show: false, message: '' }" x-show="show" x-text="message" class="bg-red-500 text-white p-2 rounded shadow">
+    </div>
+
+    <script>
+        window.addEventListener('notify', event => {
+            let el = document.querySelector('[x-data]');
+            el.__x.$data.message = event.detail.message;
+            el.__x.$data.show = true;
+            setTimeout(() => el.__x.$data.show = false, 5000);
+        });
+    </script>
+
 </div><!--end col-->
