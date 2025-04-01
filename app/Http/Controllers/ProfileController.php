@@ -33,6 +33,7 @@ class ProfileController extends Controller
             // Get transactions and filter specific fields
             $transactions = FmsTransaction::where('project_id', $id)->get()->map(function ($trx) {
                 return [
+                    'id'           => $trx->id,
                     'trx_no'       => $trx->trx_no,
                     'trx_ref'      => $trx->trx_ref,
                     'trx_date'     => $trx->trx_date,
