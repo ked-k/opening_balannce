@@ -84,10 +84,10 @@ class FmsViewProjectComponent extends Component
         $this->merpId         = $merpId         = $this->ledger_account?->merp_id;
         $this->type           = $type           = $this->ledger_account?->type ?? 'Project';
         // dd($type);
-        $response = Http::get("https://merp-v2.makbrc.org/unit/ledger/{$merpId}/{$type}");
+        $response = Http::get("https://merp.makbrc.org/unit/ledger/{$merpId}/{$type}");
         // $response = Http::get("http://merp.makbrc.online/unit/ledger/{$merpId}/{$type}");
         try {
-            $trxResponse = Http::get("https://merp-v2.makbrc.org/unit/ledger/transactions/{$merpId}/{$type}");
+            $trxResponse = Http::get("https://merp.makbrc.org/unit/ledger/transactions/{$merpId}/{$type}");
             // $trxResponse = Http::get("http://merp.makbrc.online/unit/ledger/transactions/{$merpId}/{$type}");
 
             if ($trxResponse->successful()) {
@@ -171,7 +171,7 @@ class FmsViewProjectComponent extends Component
                 ];
             });
             // dd($transactions);
-            $response = Http::get("https://merp-v2.makbrc.org/unit/ledger/sync/{$this->merpId}/{$this->type}/{$this->project_id}");
+            $response = Http::get("https://merp.makbrc.org/unit/ledger/sync/{$this->merpId}/{$this->type}/{$this->project_id}");
 
             if ($response->failed()) {
                 $this->dispatchBrowserEvent('alert', [
@@ -258,7 +258,7 @@ class FmsViewProjectComponent extends Component
     public function markMerpAsVerified($id, $state)
     {
         try {
-            $trxResponse = Http::get("https://merp-v2.makbrc.org/unit/ledger/transaction/{$id}/{$state}");
+            $trxResponse = Http::get("https://merp.makbrc.org/unit/ledger/transaction/{$id}/{$state}");
             // dd($trxResponse->body());
             $this->dispatchBrowserEvent('alert', ['type' => 'success', 'message' => $trxResponse->body()]);
         } catch (\Exception $e) {

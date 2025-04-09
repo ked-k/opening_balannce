@@ -66,7 +66,7 @@ class ProfileController extends Controller
     {
         $projects = Project::whereNotNull('merp_id')->get();
         foreach ($projects as $project) {
-            $response = Http::get('https://merp-v2.makbrc.org/unit/ledger/' . $project->merp_id);
+            $response = Http::get('https://merp.makbrc.org/unit/ledger/' . $project->merp_id);
             if ($response->successful()) {
                 $data        = $response->json(); // Decode the JSON response to an array
                 $merpBalance = $data['balance'];
