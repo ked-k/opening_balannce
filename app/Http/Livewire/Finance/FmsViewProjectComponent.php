@@ -84,9 +84,9 @@ class FmsViewProjectComponent extends Component
         $this->merpId         = $merpId         = $this->ledger_account?->merp_id;
         $this->type           = $type           = $this->ledger_account?->type ?? 'Project';
         // dd($type);
-        $response = Http::get("https://merp.makbrc.org/unit/ledger/{$merpId}/{$type}");
         // $response = Http::get("http://merp.makbrc.online/unit/ledger/{$merpId}/{$type}");
         try {
+            $response    = Http::get("https://merp.makbrc.org/unit/ledger/{$merpId}/{$type}");
             $trxResponse = Http::get("https://merp.makbrc.org/unit/ledger/transactions/{$merpId}/{$type}");
             // $trxResponse = Http::get("http://merp.makbrc.online/unit/ledger/transactions/{$merpId}/{$type}");
 
