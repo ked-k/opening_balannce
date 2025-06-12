@@ -47,7 +47,7 @@
                         </div>
                         <div class="mt-4 col-md-2 mt-2">
                             <button class="btn btn-outline-success btn-sm"
-                                wire:click="syncTransactions">{{ __('Synch') }}</button>
+                                wire:click="syncTransactions">{{ __('Sync Data') }}</button>
                             <a href="javascript:window.print()" class="btn btn-outline-info btn-sm">Print</a>
 
                         </div>
